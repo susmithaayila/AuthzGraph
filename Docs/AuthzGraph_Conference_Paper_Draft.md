@@ -75,6 +75,9 @@ Metrics evaluated:
 - **Latency Overhead (ms)**: Difference in execution time between baseline and full secure pipeline.
 - **False Positive Rate (%)**: Percentage of legitimate user requests incorrectly denied.
 
+*Methodological Note on Deterministic Trials & Confidence Intervals:*
+Because authorization policy evaluation under a fixed engine configuration is inherently deterministic, multi-trial executions ($N=40$ per vector, $N=20$ per ablation config) yield degenerate 95% confidence intervals (e.g., $[100.0\%, 100.0\%]$). Trials were repeated per vector to empirically confirm the complete absence of non-deterministic flakiness, race conditions, or session state pollution under high-frequency repeated invocation, rather than to estimate variance in an inherently stochastic process.
+
 ---
 
 ## 6. Empirical Results

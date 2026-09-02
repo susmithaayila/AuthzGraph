@@ -1,0 +1,148 @@
+{
+  "title": "AuthzGraph Layer-Ablation Matrix Results",
+  "timestamp": "20260902T153952Z",
+  "trials_per_config": 20,
+  "ablation_matrix": [
+    {
+      "disabled_layer": "None",
+      "config_name": "Baseline (All Layers Active)",
+      "active_layers": [
+        "RBAC",
+        "BFLA",
+        "BOPLA",
+        "BOLA",
+        "ABAC",
+        "MAC",
+        "AuthN"
+      ],
+      "rbac_exposure_pct": 0.0,
+      "bola_exposure_pct": 0.0,
+      "bopla_exposure_pct": 0.0,
+      "bfla_exposure_pct": 0.0,
+      "mac_exposure_pct": 0.0,
+      "abac_exposure_pct": 0.0,
+      "mac_write_exposure_pct": 0.0,
+      "total_trials_per_class": 20
+    },
+    {
+      "disabled_layer": "RBAC",
+      "config_name": "RBAC Disabled",
+      "active_layers": [
+        "BFLA",
+        "BOPLA",
+        "BOLA",
+        "ABAC",
+        "MAC",
+        "AuthN"
+      ],
+      "rbac_exposure_pct": 100.0,
+      "bola_exposure_pct": 0.0,
+      "bopla_exposure_pct": 0.0,
+      "bfla_exposure_pct": 0.0,
+      "mac_exposure_pct": 0.0,
+      "abac_exposure_pct": 0.0,
+      "mac_write_exposure_pct": 0.0,
+      "total_trials_per_class": 20
+    },
+    {
+      "disabled_layer": "BFLA",
+      "config_name": "BFLA Disabled",
+      "active_layers": [
+        "RBAC",
+        "BOPLA",
+        "BOLA",
+        "ABAC",
+        "MAC",
+        "AuthN"
+      ],
+      "rbac_exposure_pct": 0.0,
+      "bola_exposure_pct": 0.0,
+      "bopla_exposure_pct": 0.0,
+      "bfla_exposure_pct": 100.0,
+      "mac_exposure_pct": 0.0,
+      "abac_exposure_pct": 0.0,
+      "mac_write_exposure_pct": 0.0,
+      "total_trials_per_class": 20
+    },
+    {
+      "disabled_layer": "BOPLA",
+      "config_name": "BOPLA Disabled",
+      "active_layers": [
+        "RBAC",
+        "BFLA",
+        "BOLA",
+        "ABAC",
+        "MAC",
+        "AuthN"
+      ],
+      "rbac_exposure_pct": 0.0,
+      "bola_exposure_pct": 0.0,
+      "bopla_exposure_pct": 100.0,
+      "bfla_exposure_pct": 0.0,
+      "mac_exposure_pct": 0.0,
+      "abac_exposure_pct": 0.0,
+      "mac_write_exposure_pct": 0.0,
+      "total_trials_per_class": 20
+    },
+    {
+      "disabled_layer": "BOLA",
+      "config_name": "BOLA Disabled",
+      "active_layers": [
+        "RBAC",
+        "BFLA",
+        "BOPLA",
+        "ABAC",
+        "MAC",
+        "AuthN"
+      ],
+      "rbac_exposure_pct": 0.0,
+      "bola_exposure_pct": 100.0,
+      "bopla_exposure_pct": 0.0,
+      "bfla_exposure_pct": 0.0,
+      "mac_exposure_pct": 0.0,
+      "abac_exposure_pct": 0.0,
+      "mac_write_exposure_pct": 0.0,
+      "total_trials_per_class": 20
+    },
+    {
+      "disabled_layer": "ABAC",
+      "config_name": "ABAC Disabled",
+      "active_layers": [
+        "RBAC",
+        "BFLA",
+        "BOPLA",
+        "BOLA",
+        "MAC",
+        "AuthN"
+      ],
+      "rbac_exposure_pct": 0.0,
+      "bola_exposure_pct": 0.0,
+      "bopla_exposure_pct": 0.0,
+      "bfla_exposure_pct": 0.0,
+      "mac_exposure_pct": 0.0,
+      "abac_exposure_pct": 100.0,
+      "mac_write_exposure_pct": 0.0,
+      "total_trials_per_class": 20
+    },
+    {
+      "disabled_layer": "MAC",
+      "config_name": "MAC Disabled",
+      "active_layers": [
+        "RBAC",
+        "BFLA",
+        "BOPLA",
+        "BOLA",
+        "ABAC",
+        "AuthN"
+      ],
+      "rbac_exposure_pct": 0.0,
+      "bola_exposure_pct": 0.0,
+      "bopla_exposure_pct": 0.0,
+      "bfla_exposure_pct": 0.0,
+      "mac_exposure_pct": 100.0,
+      "abac_exposure_pct": 0.0,
+      "mac_write_exposure_pct": 100.0,
+      "total_trials_per_class": 20
+    }
+  ]
+}

@@ -284,6 +284,7 @@ def run_http_benchmark(base_url: str = DEFAULT_BASE_URL, trials_per_vector: int 
     with open(latest_summary_path, "w", encoding="utf-8") as f:
         json.dump(summary_data, f, indent=2)
 
+    lat_sign_str = f"{latency_overhead_ms:+.3f}"
     print(f"\n[SUCCESS] Benchmark Complete!")
     print(f"Summary Artifact Saved: {summary_path}")
     print(f"Latest Summary Shortcut: {latest_summary_path}")
@@ -291,7 +292,7 @@ def run_http_benchmark(base_url: str = DEFAULT_BASE_URL, trials_per_vector: int 
     print("\n-----------------------------------------------------------")
     print(f"Vulnerable Exposure Rate: {vuln_er}%")
     print(f"Secure Exposure Rate:     {sec_er}%")
-    print(f"Mean Latency Overhead:   +{latency_overhead_ms} ms")
+    print(f"Mean Latency Overhead:   {lat_sign_str} ms")
     print(f"False Positive Rate:      {mode_summaries['secure']['control_legitimate']['false_positive_rate_pct']}%")
     print("-----------------------------------------------------------\n")
 

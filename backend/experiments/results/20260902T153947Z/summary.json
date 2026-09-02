@@ -1,0 +1,290 @@
+{
+  "title": "AuthzGraph Empirical Research Benchmark Summary",
+  "timestamp": "20260902T153947Z",
+  "trials_per_vector": 40,
+  "modes": {
+    "vulnerable": {
+      "vectors": {
+        "BOLA_SINGLE_OBJECT": {
+          "mean": 1.558,
+          "std": 0.333,
+          "p50": 1.446,
+          "p90": 2.057,
+          "p99": 2.533,
+          "ci_95_low": 1.455,
+          "ci_95_high": 1.661,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "BOLA_ENUMERATION": {
+          "mean": 1.46,
+          "std": 0.289,
+          "p50": 1.385,
+          "p90": 1.893,
+          "p99": 2.524,
+          "ci_95_low": 1.37,
+          "ci_95_high": 1.549,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "BOPLA_MASS_ASSIGNMENT": {
+          "mean": 1.769,
+          "std": 0.317,
+          "p50": 1.703,
+          "p90": 2.398,
+          "p99": 2.495,
+          "ci_95_low": 1.671,
+          "ci_95_high": 1.868,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "BFLA_ADMIN_PROBING": {
+          "mean": 2.107,
+          "std": 0.585,
+          "p50": 1.944,
+          "p90": 3.099,
+          "p99": 4.07,
+          "ci_95_low": 1.926,
+          "ci_95_high": 2.289,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "BFLA_VERB_SWITCHING": {
+          "mean": 1.662,
+          "std": 0.483,
+          "p50": 1.509,
+          "p90": 2.373,
+          "p99": 3.741,
+          "ci_95_low": 1.513,
+          "ci_95_high": 1.812,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "ABAC_CROSS_REGION": {
+          "mean": 1.734,
+          "std": 0.413,
+          "p50": 1.641,
+          "p90": 2.366,
+          "p99": 2.671,
+          "ci_95_low": 1.606,
+          "ci_95_high": 1.862,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "ABAC_CROSS_DEPARTMENT": {
+          "mean": 1.755,
+          "std": 0.464,
+          "p50": 1.56,
+          "p90": 2.694,
+          "p99": 2.912,
+          "ci_95_low": 1.611,
+          "ci_95_high": 1.899,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "MAC_READ_UP_VIOLATION": {
+          "mean": 1.686,
+          "std": 0.349,
+          "p50": 1.547,
+          "p90": 2.295,
+          "p99": 2.589,
+          "ci_95_low": 1.578,
+          "ci_95_high": 1.794,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "MAC_WRITE_DOWN_VIOLATION": {
+          "mean": 1.803,
+          "std": 0.366,
+          "p50": 1.713,
+          "p90": 2.389,
+          "p99": 2.895,
+          "ci_95_low": 1.689,
+          "ci_95_high": 1.916,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "RBAC_PERMISSION_DENIED": {
+          "mean": 1.629,
+          "std": 0.299,
+          "p50": 1.569,
+          "p90": 2.098,
+          "p99": 2.507,
+          "ci_95_low": 1.536,
+          "ci_95_high": 1.722,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        }
+      },
+      "control_legitimate": {
+        "mean": 1.641,
+        "std": 0.277,
+        "p50": 1.627,
+        "p90": 2.048,
+        "p99": 2.544,
+        "ci_95_low": 1.555,
+        "ci_95_high": 1.726,
+        "false_positive_rate_pct": 0.0,
+        "denials": 0,
+        "trials": 40
+      },
+      "overall_exposure_rate_pct": 100.0
+    },
+    "secure": {
+      "vectors": {
+        "BOLA_SINGLE_OBJECT": {
+          "mean": 1.605,
+          "std": 0.767,
+          "p50": 1.431,
+          "p90": 2.209,
+          "p99": 5.711,
+          "ci_95_low": 1.367,
+          "ci_95_high": 1.843,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "BOLA_ENUMERATION": {
+          "mean": 1.58,
+          "std": 0.44,
+          "p50": 1.48,
+          "p90": 2.127,
+          "p99": 2.943,
+          "ci_95_low": 1.444,
+          "ci_95_high": 1.716,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "BOPLA_MASS_ASSIGNMENT": {
+          "mean": 1.876,
+          "std": 0.469,
+          "p50": 1.76,
+          "p90": 2.728,
+          "p99": 3.382,
+          "ci_95_low": 1.731,
+          "ci_95_high": 2.022,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "BFLA_ADMIN_PROBING": {
+          "mean": 1.726,
+          "std": 0.487,
+          "p50": 1.625,
+          "p90": 2.518,
+          "p99": 3.238,
+          "ci_95_low": 1.575,
+          "ci_95_high": 1.877,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "BFLA_VERB_SWITCHING": {
+          "mean": 1.719,
+          "std": 0.851,
+          "p50": 1.505,
+          "p90": 2.236,
+          "p99": 6.635,
+          "ci_95_low": 1.456,
+          "ci_95_high": 1.983,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "ABAC_CROSS_REGION": {
+          "mean": 1.489,
+          "std": 0.355,
+          "p50": 1.463,
+          "p90": 2.009,
+          "p99": 2.169,
+          "ci_95_low": 1.379,
+          "ci_95_high": 1.599,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "ABAC_CROSS_DEPARTMENT": {
+          "mean": 1.519,
+          "std": 0.25,
+          "p50": 1.501,
+          "p90": 1.875,
+          "p99": 2.364,
+          "ci_95_low": 1.441,
+          "ci_95_high": 1.596,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "MAC_READ_UP_VIOLATION": {
+          "mean": 1.534,
+          "std": 0.291,
+          "p50": 1.438,
+          "p90": 1.911,
+          "p99": 2.341,
+          "ci_95_low": 1.444,
+          "ci_95_high": 1.624,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "MAC_WRITE_DOWN_VIOLATION": {
+          "mean": 1.82,
+          "std": 0.375,
+          "p50": 1.802,
+          "p90": 2.365,
+          "p99": 2.922,
+          "ci_95_low": 1.704,
+          "ci_95_high": 1.937,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "RBAC_PERMISSION_DENIED": {
+          "mean": 1.607,
+          "std": 0.301,
+          "p50": 1.603,
+          "p90": 1.961,
+          "p99": 2.786,
+          "ci_95_low": 1.514,
+          "ci_95_high": 1.7,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        }
+      },
+      "control_legitimate": {
+        "mean": 1.595,
+        "std": 0.279,
+        "p50": 1.632,
+        "p90": 1.901,
+        "p99": 2.307,
+        "ci_95_low": 1.509,
+        "ci_95_high": 1.682,
+        "false_positive_rate_pct": 0.0,
+        "denials": 0,
+        "trials": 40
+      },
+      "overall_exposure_rate_pct": 0.0
+    }
+  },
+  "executive_summary": {
+    "vulnerable_mode_exposure_pct": 100.0,
+    "secure_mode_exposure_pct": 0.0,
+    "exposure_reduction_pct": 100.0,
+    "mean_latency_vulnerable_ms": 1.716,
+    "mean_latency_secure_ms": 1.648,
+    "latency_overhead_ms": -0.069,
+    "false_positive_rate_secure_pct": 0.0
+  }
+}

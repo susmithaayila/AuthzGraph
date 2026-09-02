@@ -54,7 +54,9 @@ def render_benchmark_markdown(summary: dict) -> str:
         ci_str = f" (95% CI: [{v_ci_low}, {v_ci_high}])" if v_ci_low != "" else ""
         lines.append(f"| {vector} | {v_er}%{ci_str} | {s_er}% |")
 
-    lines.append(f"| **Mean Latency Overhead** | — | +{lat_overhead} ms |")
+    lat_overhead = es.get("latency_overhead_ms", 0.0)
+    lat_str = f"{lat_overhead:+.3f}" if isinstance(lat_overhead, (int, float)) else f"{lat_overhead}"
+    lines.append(f"| **Mean Latency Overhead** | — | {lat_str} ms |")
     lines.append(f"| **False Positive Rate** | — | {fpr}% |")
 
     return "\n".join(lines)
@@ -95,6 +97,8 @@ def render_ablation_markdown(ablation: dict) -> str:
 def render_benchmark_latex(summary: dict) -> str:
     es = summary.get("executive_summary", {})
     ts = summary.get("timestamp", "unknown")
+    lat_overhead = es.get("latency_overhead_ms", 0.0)
+    lat_str = f"{lat_overhead:+.3f}" if isinstance(lat_overhead, (int, float)) else f"{lat_overhead}"
     lines = [
         f"% AuthzGraph Benchmark Results — Generated {ts}",
         r"\begin{table}[h]",
@@ -104,7 +108,7 @@ def render_benchmark_latex(summary: dict) -> str:
         r"\textbf{Metric} & \textbf{VULNERABLE} & \textbf{SECURE} \\",
         r"\hline",
         f"Overall ER & {es.get('vulnerable_mode_exposure_pct', 'N/A')}\\% & {es.get('secure_mode_exposure_pct', 'N/A')}\\% \\\\",
-        f"Latency Overhead & --- & +{es.get('latency_overhead_ms', 'N/A')} ms \\\\",
+        f"Latency Overhead & --- & {lat_str} ms \\\\",
         f"False Positive Rate & --- & {es.get('false_positive_rate_secure_pct', 'N/A')}\\% \\\\",
         r"\hline",
         r"\end{tabular}",
