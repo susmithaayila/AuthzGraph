@@ -1,16 +1,32 @@
 """
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║           RideX — Deliberately Vulnerable Ride-Sharing API                 ║
-║              Based on the 2022 Uber Data Breach Incident                   ║
+║         Inspired by real-world API and access-control failure patterns      ║
+╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
-║  2022 Uber Breach Facts:                                                    ║
-║    • Attacker: 18-year-old hacker (Lapsus$ group)                          ║
-║    • Method: MFA fatigue attack on contractor credentials                  ║
-║    • Data leaked: 57 million rider + driver records                        ║
-║    • Exposed: Names, emails, phone numbers, GPS trip data, bank details    ║
-║    • Settlement cost: USD 148 million                                       ║
+║  This is a SYNTHETIC demo application. It is NOT a reproduction of any     ║
+║  single real breach. Two real, separately-documented Uber incidents are     ║
+║  retained as CONTRASTING case studies in Docs/related_work.md:             ║
 ║                                                                              ║
-║  ⚠️  INTENTIONAL vulnerabilities for AuthzGraph demo ONLY                  ║
+║  - Uber, 2022: Attacker obtained contractor credentials via phishing,       ║
+║    bypassed MFA using a fatigue/social-engineering technique (repeated       ║
+║    push prompts). Reached internal tools (Slack, wikis, cloud consoles).    ║
+║    This was a BROKEN AUTHENTICATION / excessive-standing-privilege          ║
+║    incident — NOT an API object/property/function authorization failure.    ║
+║    No BOLA/BOPLA/BFLA vector was involved. Do NOT attach "57 million        ║
+║    records" to this event.                                                  ║
+║                                                                              ║
+║  - Uber, 2016: Attackers used AWS credentials found in a public GitHub      ║
+║    repository to access a cloud storage bucket, exposing ~57 million        ║
+║    rider and driver records. This is a CREDENTIAL/SECRETS-MANAGEMENT        ║
+║    failure — also not a BOLA/BOPLA/BFLA case.                              ║
+║                                                                              ║
+║  RideX's actual vulnerabilities (BOLA on /rides/{id}, BOPLA via mass-      ║
+║  assignable "role"/"fare_override" fields, BFLA on /admin/* routes) are    ║
+║  modeled on USPS 2018, Panera 2018, T-Mobile 2018-2023, and public         ║
+║  mass-assignment/BFLA bug-bounty writeups (see Docs/related_work.md).      ║
+║                                                                              ║
+║  ⚠️  INTENTIONAL vulnerabilities below exist for AuthzGraph research ONLY  ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 """
 import re, uuid, os

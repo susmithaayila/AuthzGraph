@@ -226,6 +226,24 @@ INITIAL_SYNTHETIC_USERS: Dict[int, Dict[str, Any]] = {
         "aadhaar_last4": "0002",
         "account_id": "STAFF-301",
     },
+    302: {
+        "id": 302,
+        "name": "Diana Park (North Regional Manager)",
+        "email": "diana.park@securebank.local",
+        "phone": "+1-555-0302",
+        "role": "MANAGER",
+        "department": "Retail Banking",
+        "region": "North",
+        "clearance": "CONFIDENTIAL",
+        "clearance_level": 3,
+        "accountBalance": 0.0,
+        "isVerified": True,
+        "internalRiskScore": 0,
+        "token": "token_manager_north",
+        "address": "North Branch Executive Office, Floor 5",
+        "aadhaar_last4": "0003",
+        "account_id": "STAFF-302",
+    },
     401: {
         "id": 401,
         "name": "Dr. Aris Thorne (Security Admin)",
@@ -347,6 +365,32 @@ SYNTHETIC_DOCUMENTS: Dict[int, Dict[str, Any]] = {
         "classification": "PUBLIC",
         "classification_level": 1,
         "summary": "Publicly accessible customer branch timetable.",
+    },
+    506: {
+        # ABAC test: Owned by South-region manager (301), scoped to SOUTH region.
+        # A North-region MANAGER (302) has correct RBAC (AUDIT_READ) but fails ABAC region check.
+        # Used to prove ABAC_CROSS_REGION violation is isolated from BOLA ownership.
+        "id": 506,
+        "owner_id": 301,
+        "title": "South_Region_Compliance_Audit_Q3_2026.pdf",
+        "department": "Retail Banking",
+        "region": "South",
+        "classification": "CONFIDENTIAL",
+        "classification_level": 3,
+        "summary": "Quarterly compliance and risk audit report for the South regional branch.",
+    },
+    507: {
+        # MAC write-down test: A PUBLIC document owned by admin.
+        # A SECRET-clearance user (ADMIN, 401) attempting to downgrade its classification
+        # to PUBLIC triggers the Bell-LaPadula star-property (No Write Down) check.
+        "id": 507,
+        "owner_id": 401,
+        "title": "IT_Security_Incident_Postmortem_Draft.pdf",
+        "department": "IT Security",
+        "region": "Global",
+        "classification": "SECRET",
+        "classification_level": 4,
+        "summary": "Draft post-mortem for a recent IT Security incident. Classification must not be downgraded without CISO approval.",
     },
 }
 

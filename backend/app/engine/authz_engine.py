@@ -411,14 +411,14 @@ class CentralAuthorizationEngine:
                 log_decision(decision)
                 return decision
 
-        # Step 7: MAC Check (Sensitivity Level Lattice: Clearance >= Classification)
+        # Step 7a: MAC No-Read-Up Check (Bell-LaPadula: user clearance >= resource classification)
         if "MAC" not in disabled_layers and resource_attributes.get("classification"):
             res_class = resource_attributes["classification"]
             res_class_lvl = MAC_LEVELS.get(res_class.upper(), 1)
             if user_clearance_lvl < res_class_lvl:
                 decision = AuthorizationDecision(
                     decision="DENY",
-                    reason=f"MAC Protection: User clearance level '{user_clearance}' ({user_clearance_lvl}) is lower than document classification level '{res_class}' ({res_class_lvl}). Access denied.",
+                    reason=f"MAC Protection (No-Read-Up): User clearance level '{user_clearance}' ({user_clearance_lvl}) is lower than document classification level '{res_class}' ({res_class_lvl}). Access denied.",
                     policy="MAC",
                     required_permission=f"CLEARANCE_{res_class}",
                     user_role=user_role,
@@ -426,7 +426,32 @@ class CentralAuthorizationEngine:
                     username=username,
                     endpoint=endpoint_path,
                     status_code=403,
-                    extra_details={"user_clearance": user_clearance, "resource_classification": res_class},
+                    extra_details={"user_clearance": user_clearance, "resource_classification": res_class, "property": "no_read_up"},
+                )
+                log_decision(decision)
+                return decision
+
+        # Step 7b: MAC No-Write-Down Check (Bell-LaPadula star property)
+        # A user with SECRET clearance cannot downgrade a document to a lower classification.
+        # resource_attributes["target_classification"] indicates the requested new classification level.
+        if "MAC" not in disabled_layers and action == "UPDATE" and resource_attributes.get("target_classification"):
+            target_class = resource_attributes["target_classification"]
+            target_class_lvl = MAC_LEVELS.get(target_class.upper(), 1)
+            # Source classification is the current document classification
+            src_class = resource_attributes.get("classification", "PUBLIC")
+            src_class_lvl = MAC_LEVELS.get(src_class.upper(), 1)
+            if user_clearance_lvl > target_class_lvl and src_class_lvl > target_class_lvl:
+                decision = AuthorizationDecision(
+                    decision="DENY",
+                    reason=f"MAC Protection (No-Write-Down): User with '{user_clearance}' clearance (L{user_clearance_lvl}) cannot downgrade document from '{src_class}' (L{src_class_lvl}) to '{target_class}' (L{target_class_lvl}). Bell-LaPadula star property violation.",
+                    policy="MAC",
+                    required_permission="MAC_WRITE_DOWN_PROHIBITED",
+                    user_role=user_role,
+                    user_id=user_id,
+                    username=username,
+                    endpoint=endpoint_path,
+                    status_code=403,
+                    extra_details={"user_clearance": user_clearance, "current_classification": src_class, "target_classification": target_class, "property": "no_write_down"},
                 )
                 log_decision(decision)
                 return decision

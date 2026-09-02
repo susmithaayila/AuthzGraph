@@ -959,6 +959,58 @@ async def bank_get_document(doc_id: int, authorization: Optional[str] = Header(N
     return {"document": doc, "decision": decision.to_dict()}
 
 
+@router.patch("/bank/documents/{doc_id}/classify")
+async def bank_reclassify_document(
+    doc_id: int,
+    body: dict,
+    authorization: Optional[str] = Header(None),
+):
+    """
+    Attempt to reclassify (update classification) of a document.
+    Tests MAC No-Write-Down (Bell-LaPadula star property):
+    a user with SECRET clearance cannot downgrade a document to a lower classification level.
+    """
+    current_user = resolve_user_from_token_or_header(authorization) or SYNTHETIC_USERS[401]
+    doc = SYNTHETIC_DOCUMENTS.get(doc_id)
+
+    if not doc:
+        raise HTTPException(status_code=404, detail=f"Document {doc_id} not found")
+
+    target_classification = body.get("classification", "PUBLIC").upper()
+
+    # Build resource_attributes with the write-down target so the engine can check star property
+    attrs_with_target = {**doc, "target_classification": target_classification}
+
+    decision = CentralAuthorizationEngine.evaluate_request(
+        current_user=current_user,
+        action="UPDATE",
+        resource_type="DOCUMENT",
+        resource_owner_id=doc["owner_id"],
+        resource_attributes=attrs_with_target,
+        required_permission="ADMIN_DASHBOARD",
+        endpoint_path=f"/api/v1/bank/documents/{doc_id}/classify",
+    )
+
+    if decision.decision == "DENY":
+        raise HTTPException(
+            status_code=decision.status_code,
+            detail={
+                "error": "Document Reclassification Denied",
+                "reason": decision.reason,
+                "policy": decision.policy,
+                "current_classification": doc.get("classification"),
+                "target_classification": target_classification,
+                "user_clearance": current_user.get("clearance"),
+            },
+        )
+
+    return {
+        "message": f"Document {doc_id} reclassified to {target_classification}",
+        "document": doc,
+        "decision": decision.to_dict(),
+    }
+
+
 @router.get("/bank/tickets")
 async def bank_list_tickets(authorization: Optional[str] = Header(None)):
     current_user = resolve_user_from_token_or_header(authorization) or SYNTHETIC_USERS[101]

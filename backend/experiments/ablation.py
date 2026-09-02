@@ -12,7 +12,9 @@ from datetime import datetime, timezone
 import httpx
 
 DEFAULT_BASE_URL = "http://localhost:8000/api/v1"
-ALICE_TOKEN = "token_alice"
+ALICE_TOKEN = "token_alice"          # User 101 (CUSTOMER, South, CONFIDENTIAL)
+ADMIN_TOKEN = "token_admin"          # User 401 (ADMIN, SECRET clearance)
+MANAGER_NORTH_TOKEN = "token_manager_north"  # User 302 (MANAGER, North region)
 
 ALL_LAYERS = ["RBAC", "BFLA", "BOPLA", "BOLA", "ABAC", "MAC", "AuthN"]
 
@@ -60,6 +62,11 @@ def run_ablation_experiment(base_url: str = DEFAULT_BASE_URL, trials_per_config:
         bopla_exposures = 0
         bfla_exposures = 0
         mac_exposures = 0
+        abac_exposures = 0
+        mac_write_exposures = 0
+
+        headers_mgr_north = {"Authorization": f"Bearer {MANAGER_NORTH_TOKEN}"}
+        headers_admin = {"Authorization": f"Bearer {ADMIN_TOKEN}"}
 
         for i in range(trials_per_config):
             # Test BOLA: Read Bob's profile (102)
@@ -77,15 +84,27 @@ def run_ablation_experiment(base_url: str = DEFAULT_BASE_URL, trials_per_config:
             if r_bfla.status_code == 200 or (disabled_layer == "BFLA" and r_bfla.json().get("detail", {}).get("policy") != "BFLA_PROTECTION"):
                 bfla_exposures += 1
 
-            # Test MAC: Read SECRET document (504)
+            # Test MAC No-Read-Up: Alice (CONFIDENTIAL L3) reading SECRET doc (504, L4)
             r_mac = client.get("/bank/documents/504", headers=headers_alice)
             if r_mac.status_code == 200:
                 mac_exposures += 1
+
+            # Test ABAC Cross-Region: North MANAGER reading South-region doc (506)
+            r_abac = client.get("/bank/documents/506", headers=headers_mgr_north)
+            if r_abac.status_code == 200:
+                abac_exposures += 1
+
+            # Test MAC No-Write-Down: Admin (SECRET L4) downgrading SECRET doc (507) to PUBLIC
+            r_mac_write = client.patch("/bank/documents/507/classify", json={"classification": "PUBLIC"}, headers=headers_admin)
+            if r_mac_write.status_code == 200:
+                mac_write_exposures += 1
 
         bola_er = round((bola_exposures / trials_per_config) * 100.0, 1)
         bopla_er = round((bopla_exposures / trials_per_config) * 100.0, 1)
         bfla_er = round((bfla_exposures / trials_per_config) * 100.0, 1)
         mac_er = round((mac_exposures / trials_per_config) * 100.0, 1)
+        abac_er = round((abac_exposures / trials_per_config) * 100.0, 1)
+        mac_write_er = round((mac_write_exposures / trials_per_config) * 100.0, 1)
 
         row = {
             "disabled_layer": disabled_layer,
@@ -95,11 +114,13 @@ def run_ablation_experiment(base_url: str = DEFAULT_BASE_URL, trials_per_config:
             "bopla_exposure_pct": bopla_er,
             "bfla_exposure_pct": bfla_er,
             "mac_exposure_pct": mac_er,
+            "abac_exposure_pct": abac_er,
+            "mac_write_exposure_pct": mac_write_er,
             "total_trials_per_class": trials_per_config,
         }
         matrix.append(row)
 
-        print(f"   BOLA ER: {bola_er}% | BOPLA ER: {bopla_er}% | BFLA ER: {bfla_er}% | MAC ER: {mac_er}%")
+        print(f"   BOLA ER: {bola_er}% | BOPLA ER: {bopla_er}% | BFLA ER: {bfla_er}% | MAC ER: {mac_er}% | ABAC ER: {abac_er}% | MAC_WRITE ER: {mac_write_er}%")
 
     # Reset active layers to all
     client.post("/policy/active-layers", json={"layers": ALL_LAYERS})

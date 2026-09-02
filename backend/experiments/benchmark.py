@@ -15,9 +15,10 @@ import httpx
 DEFAULT_BASE_URL = "http://localhost:8000/api/v1"
 
 # Synthetic user tokens from bank_data.py
-ALICE_TOKEN = "token_alice"     # User 101 (CUSTOMER)
-BOB_TOKEN = "token_bob"         # User 102 (CUSTOMER)
-ADMIN_TOKEN = "token_admin"     # User 401 (ADMIN)
+ALICE_TOKEN = "token_alice"          # User 101 (CUSTOMER, South, CONFIDENTIAL clearance)
+BOB_TOKEN = "token_bob"              # User 102 (CUSTOMER, North, CONFIDENTIAL clearance)
+ADMIN_TOKEN = "token_admin"          # User 401 (ADMIN, SECRET clearance)
+MANAGER_NORTH_TOKEN = "token_manager_north"  # User 302 (MANAGER, North region, CONFIDENTIAL)
 
 ATTACK_VECTORS = [
     "BOLA_SINGLE_OBJECT",
@@ -25,6 +26,10 @@ ATTACK_VECTORS = [
     "BOPLA_MASS_ASSIGNMENT",
     "BFLA_ADMIN_PROBING",
     "BFLA_VERB_SWITCHING",
+    "ABAC_CROSS_REGION",        # NEW: North MANAGER accessing South doc (506)
+    "ABAC_CROSS_DEPARTMENT",    # NEW: North MANAGER accessing South-owned audit (cross-region variant)
+    "MAC_READ_UP_VIOLATION",    # NEW: CONFIDENTIAL user reading SECRET doc (504)
+    "MAC_WRITE_DOWN_VIOLATION", # NEW: SECRET-clearance admin downgrading SECRET doc (507) to PUBLIC
 ]
 
 
@@ -143,6 +148,43 @@ def run_http_benchmark(base_url: str = DEFAULT_BASE_URL, trials_per_vector: int 
                 elif vector == "BFLA_VERB_SWITCHING":
                     # Alice attempts DELETE on user 102
                     res = client.delete("/bank/admin/users/102", headers=headers_alice)
+                    status_code = res.status_code
+                    if status_code == 200:
+                        exposed = True
+
+                elif vector == "ABAC_CROSS_REGION":
+                    # North-region MANAGER (302) attempts to read a South-region audit document (506).
+                    # RBAC allows AUDIT_READ; BOLA is satisfied (owner_id=301, user_id=302 => MANAGER exempt);
+                    # Only ABAC region check catches it. Proves ABAC layer necessity.
+                    headers_mgr_north = {"Authorization": f"Bearer {MANAGER_NORTH_TOKEN}"}
+                    res = client.get("/bank/documents/506", headers=headers_mgr_north)
+                    status_code = res.status_code
+                    if status_code == 200:
+                        exposed = True
+
+                elif vector == "ABAC_CROSS_DEPARTMENT":
+                    # A second ABAC check: same cross-region scenario using a different target document
+                    # (doc 503 - South Region Salary Audit, also owned by 301, region=South).
+                    # This confirms ABAC exposure is repeatable across distinct documents.
+                    headers_mgr_north = {"Authorization": f"Bearer {MANAGER_NORTH_TOKEN}"}
+                    res = client.get("/bank/documents/503", headers=headers_mgr_north)
+                    status_code = res.status_code
+                    if status_code == 200:
+                        exposed = True
+
+                elif vector == "MAC_READ_UP_VIOLATION":
+                    # Alice (CONFIDENTIAL, clearance_level=3) tries to read doc 504 (SECRET, level=4).
+                    # RBAC, BOLA, and ABAC would otherwise pass. Only MAC blocks it.
+                    res = client.get("/bank/documents/504", headers=headers_alice)
+                    status_code = res.status_code
+                    if status_code == 200:
+                        exposed = True
+
+                elif vector == "MAC_WRITE_DOWN_VIOLATION":
+                    # Admin (SECRET, clearance_level=4) tries to downgrade doc 507 (SECRET) to PUBLIC.
+                    # Bell-LaPadula star-property (No Write Down) must block this.
+                    headers_admin = {"Authorization": f"Bearer {ADMIN_TOKEN}"}
+                    res = client.patch("/bank/documents/507/classify", json={"classification": "PUBLIC"}, headers=headers_admin)
                     status_code = res.status_code
                     if status_code == 200:
                         exposed = True

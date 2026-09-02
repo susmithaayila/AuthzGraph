@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -315,15 +315,15 @@
     </div>
   </header>
 
-  <!-- Uber Breach Banner -->
+  <!-- Research Context Banner -->
   <div class="breach-banner">
-    <div class="breach-title">🕵️ 2022 UBER DATA BREACH — REAL INCIDENT SIMULATION</div>
+    <div class="breach-title">🔬 RESEARCH CONTEXT — REAL-WORLD API AUTHORIZATION FAILURE PATTERNS</div>
     <div class="breach-facts">
-      <div class="breach-fact">👥 <span>57 Million</span> rider + driver records leaked</div>
-      <div class="breach-fact">💰 <span>$148M</span> settlement paid</div>
-      <div class="breach-fact">🔓 <span>BOLA + BFLA</span> root vulnerabilities</div>
-      <div class="breach-fact">🧑‍💻 <span>18-year-old</span> attacker (Lapsus$ group)</div>
-      <div class="breach-fact">🌍 <span>No</span> authorization checks on user objects</div>
+      <div class="breach-fact">📋 <span>Uber 2016</span>: ~57M records via exposed AWS credentials on GitHub (credential/secrets mgmt failure — not BOLA)</div>
+      <div class="breach-fact">🔐 <span>Uber 2022</span>: Internal tools breached via MFA fatigue phishing (broken AuthN — not BOLA/BOPLA/BFLA)</div>
+      <div class="breach-fact">🔓 <span>USPS 2018</span>: 60M records via unauthenticated API + object ID enumeration (genuine BOLA pattern)</div>
+      <div class="breach-fact">🧑‍💻 <span>RideX vulnerabilities</span>: BOLA on /rides/{id}, BOPLA mass-assignment, BFLA on /admin/* (modeled on real bug-bounty patterns)</div>
+      <div class="breach-fact">⚠️ <span>Note</span>: This is a SYNTHETIC demo — not a reproduction of any single real incident</div>
     </div>
   </div>
 
