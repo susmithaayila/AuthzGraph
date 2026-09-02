@@ -1,6 +1,6 @@
 {
   "title": "AuthzGraph Layer-Ablation Matrix Results",
-  "timestamp": "20260902T130159Z",
+  "timestamp": "20260902T153311Z",
   "trials_per_config": 20,
   "ablation_matrix": [
     {
@@ -15,6 +15,7 @@
         "MAC",
         "AuthN"
       ],
+      "rbac_exposure_pct": 0.0,
       "bola_exposure_pct": 0.0,
       "bopla_exposure_pct": 0.0,
       "bfla_exposure_pct": 0.0,
@@ -34,6 +35,7 @@
         "MAC",
         "AuthN"
       ],
+      "rbac_exposure_pct": 100.0,
       "bola_exposure_pct": 0.0,
       "bopla_exposure_pct": 0.0,
       "bfla_exposure_pct": 0.0,
@@ -53,6 +55,7 @@
         "MAC",
         "AuthN"
       ],
+      "rbac_exposure_pct": 0.0,
       "bola_exposure_pct": 0.0,
       "bopla_exposure_pct": 0.0,
       "bfla_exposure_pct": 100.0,
@@ -72,6 +75,7 @@
         "MAC",
         "AuthN"
       ],
+      "rbac_exposure_pct": 0.0,
       "bola_exposure_pct": 0.0,
       "bopla_exposure_pct": 100.0,
       "bfla_exposure_pct": 0.0,
@@ -91,6 +95,7 @@
         "MAC",
         "AuthN"
       ],
+      "rbac_exposure_pct": 0.0,
       "bola_exposure_pct": 100.0,
       "bopla_exposure_pct": 0.0,
       "bfla_exposure_pct": 0.0,
@@ -110,6 +115,7 @@
         "MAC",
         "AuthN"
       ],
+      "rbac_exposure_pct": 0.0,
       "bola_exposure_pct": 0.0,
       "bopla_exposure_pct": 0.0,
       "bfla_exposure_pct": 0.0,
@@ -129,6 +135,7 @@
         "ABAC",
         "AuthN"
       ],
+      "rbac_exposure_pct": 0.0,
       "bola_exposure_pct": 0.0,
       "bopla_exposure_pct": 0.0,
       "bfla_exposure_pct": 0.0,

@@ -58,6 +58,7 @@ def run_ablation_experiment(base_url: str = DEFAULT_BASE_URL, trials_per_config:
         print(f"\n[CONFIG] Config: [{config_name}] (Active: {active_layers})")
         client.post("/policy/active-layers", json={"layers": active_layers})
 
+        rbac_exposures = 0
         bola_exposures = 0
         bopla_exposures = 0
         bfla_exposures = 0
@@ -69,6 +70,11 @@ def run_ablation_experiment(base_url: str = DEFAULT_BASE_URL, trials_per_config:
         headers_admin = {"Authorization": f"Bearer {ADMIN_TOKEN}"}
 
         for i in range(trials_per_config):
+            # Test RBAC Permission: Alice (CUSTOMER) requesting AUDIT_READ on /bank/audit-summary
+            r_rbac = client.get("/bank/audit-summary", headers=headers_alice)
+            if r_rbac.status_code == 200:
+                rbac_exposures += 1
+
             # Test BOLA: Read Bob's profile (102)
             r_bola = client.get("/bank/users/102", headers=headers_alice)
             if r_bola.status_code == 200:
@@ -99,6 +105,7 @@ def run_ablation_experiment(base_url: str = DEFAULT_BASE_URL, trials_per_config:
             if r_mac_write.status_code == 200:
                 mac_write_exposures += 1
 
+        rbac_er = round((rbac_exposures / trials_per_config) * 100.0, 1)
         bola_er = round((bola_exposures / trials_per_config) * 100.0, 1)
         bopla_er = round((bopla_exposures / trials_per_config) * 100.0, 1)
         bfla_er = round((bfla_exposures / trials_per_config) * 100.0, 1)
@@ -110,6 +117,7 @@ def run_ablation_experiment(base_url: str = DEFAULT_BASE_URL, trials_per_config:
             "disabled_layer": disabled_layer,
             "config_name": config_name,
             "active_layers": active_layers,
+            "rbac_exposure_pct": rbac_er,
             "bola_exposure_pct": bola_er,
             "bopla_exposure_pct": bopla_er,
             "bfla_exposure_pct": bfla_er,
@@ -120,7 +128,7 @@ def run_ablation_experiment(base_url: str = DEFAULT_BASE_URL, trials_per_config:
         }
         matrix.append(row)
 
-        print(f"   BOLA ER: {bola_er}% | BOPLA ER: {bopla_er}% | BFLA ER: {bfla_er}% | MAC ER: {mac_er}% | ABAC ER: {abac_er}% | MAC_WRITE ER: {mac_write_er}%")
+        print(f"   RBAC ER: {rbac_er}% | BOLA ER: {bola_er}% | BOPLA ER: {bopla_er}% | BFLA ER: {bfla_er}% | MAC ER: {mac_er}% | ABAC ER: {abac_er}% | MAC_WRITE ER: {mac_write_er}%")
 
     # Reset active layers to all
     client.post("/policy/active-layers", json={"layers": ALL_LAYERS})

@@ -269,3 +269,68 @@ def test_http_mac_read_up_isolation_via_api():
     # Reset
     client.post("/api/v1/policy/active-layers", json={"layers": ["RBAC", "BFLA", "BOPLA", "BOLA", "ABAC", "MAC", "AuthN"]})
 
+
+def test_rbac_isolation_deny_and_allow():
+    """
+    Engine unit test:
+    Alice (CUSTOMER) requesting AUDIT_READ on /bank/audit-summary:
+    - With RBAC active -> DENY (policy="RBAC")
+    - With RBAC disabled -> ALLOW
+    Proves RBAC permission matrix layer isolation.
+    """
+    alice = get_user(101)
+    d_active = CentralAuthorizationEngine.evaluate_request(
+        current_user=alice,
+        action="READ",
+        resource_type="AUDIT_SUMMARY",
+        resource_owner_id=None,
+        resource_attributes={},
+        required_permission="AUDIT_READ",
+        endpoint_path="/api/v1/bank/audit-summary",
+    )
+    assert d_active.decision == "DENY"
+    assert d_active.policy == "RBAC"
+
+    d_disabled = CentralAuthorizationEngine.evaluate_request(
+        current_user=alice,
+        action="READ",
+        resource_type="AUDIT_SUMMARY",
+        resource_owner_id=None,
+        resource_attributes={},
+        required_permission="AUDIT_READ",
+        endpoint_path="/api/v1/bank/audit-summary",
+        disabled_layers=["RBAC"],
+    )
+    assert d_disabled.decision == "ALLOW"
+
+
+def test_http_rbac_isolation_via_api():
+    """
+    HTTP integration test:
+    Alice (token_alice) accessing /bank/audit-summary
+    - With RBAC active -> DENY (403)
+    - With RBAC disabled -> ALLOW (200)
+    Proves RBAC layer isolation over HTTP.
+    """
+    from fastapi.testclient import TestClient
+    from main import app
+    client = TestClient(app)
+
+    headers = {"Authorization": "Bearer token_alice"}
+
+    client.post("/api/v1/policy/mode", json={"mode": "secure"})
+    client.post("/api/v1/policy/active-layers", json={"layers": ["RBAC", "BFLA", "BOPLA", "BOLA", "ABAC", "MAC", "AuthN"]})
+
+    r_active = client.get("/api/v1/bank/audit-summary", headers=headers)
+    assert r_active.status_code == 403, f"Expected 403 DENY with RBAC active, got {r_active.status_code}"
+    assert r_active.json().get("detail", {}).get("policy") == "RBAC"
+
+    # Disable RBAC
+    client.post("/api/v1/policy/active-layers", json={"layers": ["BFLA", "BOPLA", "BOLA", "ABAC", "MAC", "AuthN"]})
+    r_disabled = client.get("/api/v1/bank/audit-summary", headers=headers)
+    assert r_disabled.status_code == 200, f"Expected 200 ALLOW with RBAC disabled, got {r_disabled.status_code}"
+
+    # Reset
+    client.post("/api/v1/policy/active-layers", json={"layers": ["RBAC", "BFLA", "BOPLA", "BOLA", "ABAC", "MAC", "AuthN"]})
+
+

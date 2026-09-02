@@ -1016,6 +1016,51 @@ async def bank_reclassify_document(
     }
 
 
+@router.get("/bank/audit-summary")
+async def bank_get_audit_summary(authorization: Optional[str] = Header(None)):
+    """
+    Role-level aggregate endpoint requiring "AUDIT_READ" permission.
+    Used for RBAC isolation testing:
+    - Path has no /admin/ prefix (BFLA does not apply)
+    - Resource has no owner_id (BOLA does not apply)
+    - Resource has no region/department/classification attributes (ABAC/MAC do not apply)
+    - Only RBAC role permission matrix determines access.
+    """
+    current_user = resolve_user_from_token_or_header(authorization) or SYNTHETIC_USERS[101]
+
+    decision = CentralAuthorizationEngine.evaluate_request(
+        current_user=current_user,
+        action="READ",
+        resource_type="AUDIT_SUMMARY",
+        resource_owner_id=None,
+        resource_attributes={},
+        required_permission="AUDIT_READ",
+        endpoint_path="/api/v1/bank/audit-summary",
+    )
+
+    if decision.decision == "DENY":
+        raise HTTPException(
+            status_code=decision.status_code,
+            detail={
+                "error": "Audit Summary Access Denied",
+                "reason": decision.reason,
+                "policy": decision.policy,
+                "required_permission": "AUDIT_READ",
+                "user_role": current_user.get("role"),
+            },
+        )
+
+    return {
+        "status": "SUCCESS",
+        "audit_summary": {
+            "total_audited_transactions": 1420,
+            "compliance_score_pct": 98.4,
+            "last_audit_timestamp": "2026-09-01T12:00:00Z",
+        },
+        "decision": decision.to_dict(),
+    }
+
+
 @router.get("/bank/tickets")
 async def bank_list_tickets(authorization: Optional[str] = Header(None)):
     current_user = resolve_user_from_token_or_header(authorization) or SYNTHETIC_USERS[101]

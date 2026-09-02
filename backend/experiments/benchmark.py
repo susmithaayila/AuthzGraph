@@ -30,6 +30,7 @@ ATTACK_VECTORS = [
     "ABAC_CROSS_DEPARTMENT",    # NEW: North MANAGER accessing South-owned audit (cross-region variant)
     "MAC_READ_UP_VIOLATION",    # NEW: CONFIDENTIAL user reading SECRET doc owned by self (508)
     "MAC_WRITE_DOWN_VIOLATION", # NEW: SECRET-clearance admin downgrading SECRET doc (507) to PUBLIC
+    "RBAC_PERMISSION_DENIED",   # NEW: CUSTOMER requesting AUDIT_READ on /bank/audit-summary
 ]
 
 
@@ -185,6 +186,15 @@ def run_http_benchmark(base_url: str = DEFAULT_BASE_URL, trials_per_vector: int 
                     # Bell-LaPadula star-property (No Write Down) must block this.
                     headers_admin = {"Authorization": f"Bearer {ADMIN_TOKEN}"}
                     res = client.patch("/bank/documents/507/classify", json={"classification": "PUBLIC"}, headers=headers_admin)
+                    status_code = res.status_code
+                    if status_code == 200:
+                        exposed = True
+
+                elif vector == "RBAC_PERMISSION_DENIED":
+                    # Alice (CUSTOMER) attempts to read /bank/audit-summary which requires AUDIT_READ.
+                    # BFLA (no /admin/), BOLA (no owner_id), ABAC/MAC (no attributes) do not apply.
+                    # Only RBAC role permission matrix blocks this request.
+                    res = client.get("/bank/audit-summary", headers=headers_alice)
                     status_code = res.status_code
                     if status_code == 200:
                         exposed = True
