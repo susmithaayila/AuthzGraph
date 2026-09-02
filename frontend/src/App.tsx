@@ -51,6 +51,7 @@ import {
 import { AttackLabView } from './components/AttackLabView';
 import { AttackerConsoleView } from './components/AttackerConsoleView';
 import { AccessControlView } from './components/AccessControlView';
+import { ResearchBenchmarkView } from './components/ResearchBenchmarkView';
 
 import { AuthzMatrixView } from './components/AuthzMatrixView';
 import { UsersView } from './components/UsersView';
@@ -63,7 +64,7 @@ const API_BASE = 'http://localhost:8000/api/v1';
 export function App() {
 
   const [activeTab, setActiveTab] = useState<
-    'DASHBOARD' | 'ATTACK_LAB' | 'ATTACKER_CONSOLE' | 'ACCESS_CONTROL' | 'MATRIX' | 'USERS' | 'LOGS' | 'REPORTS' | 'SIMULATOR'
+    'DASHBOARD' | 'ATTACK_LAB' | 'ATTACKER_CONSOLE' | 'RESEARCH_LAB' | 'ACCESS_CONTROL' | 'MATRIX' | 'USERS' | 'LOGS' | 'REPORTS' | 'SIMULATOR'
   >('DASHBOARD');
 
 
@@ -267,6 +268,16 @@ export function App() {
               🕵 Attacker Console
             </button>
 
+            <button
+              onClick={() => setActiveTab('RESEARCH_LAB')}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
+                activeTab === 'RESEARCH_LAB' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+              }`}
+            >
+              <Activity className="w-4 h-4 text-cyan-400" />
+              📊 Research Benchmark Suite
+            </button>
+
 
             <button
               onClick={() => setActiveTab('ACCESS_CONTROL')}
@@ -436,6 +447,8 @@ export function App() {
           {activeTab === 'ATTACKER_CONSOLE' && (
             <AttackerConsoleView currentUser={currentUser} securityMode={securityMode} onToggleMode={handleToggleMode} />
           )}
+
+          {activeTab === 'RESEARCH_LAB' && <ResearchBenchmarkView />}
 
           {activeTab === 'ACCESS_CONTROL' && <AccessControlView />}
 

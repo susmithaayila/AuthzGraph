@@ -1,0 +1,170 @@
+{
+  "title": "AuthzGraph Empirical Research Benchmark Summary",
+  "timestamp": "20260901T080917Z",
+  "trials_per_vector": 30,
+  "modes": {
+    "vulnerable": {
+      "vectors": {
+        "BOLA_SINGLE_OBJECT": {
+          "mean": 2.39,
+          "std": 0.469,
+          "p50": 2.312,
+          "p90": 3.213,
+          "p99": 3.743,
+          "ci_95_low": 2.223,
+          "ci_95_high": 2.558,
+          "exposure_rate_pct": 100.0,
+          "trials": 30,
+          "exposures": 30
+        },
+        "BOLA_ENUMERATION": {
+          "mean": 1.704,
+          "std": 0.399,
+          "p50": 1.688,
+          "p90": 2.248,
+          "p99": 2.662,
+          "ci_95_low": 1.562,
+          "ci_95_high": 1.847,
+          "exposure_rate_pct": 100.0,
+          "trials": 30,
+          "exposures": 30
+        },
+        "BOPLA_MASS_ASSIGNMENT": {
+          "mean": 1.722,
+          "std": 0.307,
+          "p50": 1.661,
+          "p90": 2.227,
+          "p99": 2.359,
+          "ci_95_low": 1.613,
+          "ci_95_high": 1.832,
+          "exposure_rate_pct": 100.0,
+          "trials": 30,
+          "exposures": 30
+        },
+        "BFLA_ADMIN_PROBING": {
+          "mean": 2.123,
+          "std": 0.497,
+          "p50": 2.105,
+          "p90": 3.018,
+          "p99": 3.141,
+          "ci_95_low": 1.945,
+          "ci_95_high": 2.301,
+          "exposure_rate_pct": 100.0,
+          "trials": 30,
+          "exposures": 30
+        },
+        "BFLA_VERB_SWITCHING": {
+          "mean": 1.394,
+          "std": 0.259,
+          "p50": 1.386,
+          "p90": 1.724,
+          "p99": 2.172,
+          "ci_95_low": 1.301,
+          "ci_95_high": 1.486,
+          "exposure_rate_pct": 100.0,
+          "trials": 30,
+          "exposures": 30
+        }
+      },
+      "control_legitimate": {
+        "mean": 1.781,
+        "std": 0.375,
+        "p50": 1.802,
+        "p90": 2.194,
+        "p99": 2.985,
+        "ci_95_low": 1.647,
+        "ci_95_high": 1.915,
+        "false_positive_rate_pct": 0.0,
+        "denials": 0,
+        "trials": 30
+      },
+      "overall_exposure_rate_pct": 100.0
+    },
+    "secure": {
+      "vectors": {
+        "BOLA_SINGLE_OBJECT": {
+          "mean": 1.248,
+          "std": 0.232,
+          "p50": 1.211,
+          "p90": 1.555,
+          "p99": 1.821,
+          "ci_95_low": 1.164,
+          "ci_95_high": 1.331,
+          "exposure_rate_pct": 0.0,
+          "trials": 30,
+          "exposures": 0
+        },
+        "BOLA_ENUMERATION": {
+          "mean": 1.071,
+          "std": 0.122,
+          "p50": 1.034,
+          "p90": 1.266,
+          "p99": 1.35,
+          "ci_95_low": 1.027,
+          "ci_95_high": 1.115,
+          "exposure_rate_pct": 0.0,
+          "trials": 30,
+          "exposures": 0
+        },
+        "BOPLA_MASS_ASSIGNMENT": {
+          "mean": 1.178,
+          "std": 0.269,
+          "p50": 1.062,
+          "p90": 1.718,
+          "p99": 2.001,
+          "ci_95_low": 1.082,
+          "ci_95_high": 1.274,
+          "exposure_rate_pct": 0.0,
+          "trials": 30,
+          "exposures": 0
+        },
+        "BFLA_ADMIN_PROBING": {
+          "mean": 1.086,
+          "std": 0.188,
+          "p50": 1.058,
+          "p90": 1.398,
+          "p99": 1.549,
+          "ci_95_low": 1.019,
+          "ci_95_high": 1.153,
+          "exposure_rate_pct": 0.0,
+          "trials": 30,
+          "exposures": 0
+        },
+        "BFLA_VERB_SWITCHING": {
+          "mean": 1.092,
+          "std": 0.192,
+          "p50": 1.023,
+          "p90": 1.451,
+          "p99": 1.565,
+          "ci_95_low": 1.023,
+          "ci_95_high": 1.16,
+          "exposure_rate_pct": 0.0,
+          "trials": 30,
+          "exposures": 0
+        }
+      },
+      "control_legitimate": {
+        "mean": 1.599,
+        "std": 0.422,
+        "p50": 1.586,
+        "p90": 2.221,
+        "p99": 2.921,
+        "ci_95_low": 1.448,
+        "ci_95_high": 1.75,
+        "false_positive_rate_pct": 0.0,
+        "denials": 0,
+        "trials": 30
+      },
+      "overall_exposure_rate_pct": 0.0
+    }
+  },
+  "executive_summary": {
+    "vulnerable_mode_exposure_pct": 100.0,
+    "secure_mode_exposure_pct": 0.0,
+    "exposure_reduction_pct": 100.0,
+    "mean_latency_vulnerable_ms": 1.867,
+    "mean_latency_secure_ms": 1.135,
+    "latency_overhead_ms": -0.732,
+    "false_positive_rate_secure_pct": 0.0
+  }
+}

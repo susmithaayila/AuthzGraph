@@ -29,6 +29,24 @@ def get_security_mode() -> str:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Per-Layer Policy Toggle State (for Ablation Experiments)
+# ─────────────────────────────────────────────────────────────────────────────
+ALL_VALID_LAYERS: set[str] = {"RBAC", "BFLA", "BOPLA", "BOLA", "ABAC", "MAC", "AuthN"}
+ACTIVE_LAYERS: set[str] = {"RBAC", "BFLA", "BOPLA", "BOLA", "ABAC", "MAC", "AuthN"}
+
+
+def set_active_layers(layers: List[str]) -> set[str]:
+    global ACTIVE_LAYERS
+    valid_requested = set(layers) & ALL_VALID_LAYERS
+    ACTIVE_LAYERS = valid_requested
+    return ACTIVE_LAYERS
+
+
+def get_active_layers() -> List[str]:
+    return sorted(list(ACTIVE_LAYERS))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Security Clearance & Classification Lattice (MAC Model)
 # ─────────────────────────────────────────────────────────────────────────────
 MAC_LEVELS: Dict[str, int] = {
@@ -223,12 +241,15 @@ class CentralAuthorizationEngine:
         requested_properties: Optional[List[str]] = None,
         required_permission: Optional[str] = None,
         endpoint_path: Optional[str] = None,
+        disabled_layers: Optional[List[str]] = None,
     ) -> AuthorizationDecision:
+        if disabled_layers is None:
+            disabled_layers = list(ALL_VALID_LAYERS - ACTIVE_LAYERS)
         resource_attributes = resource_attributes or {}
         mode = get_security_mode()
 
         # Step 1: Authentication Check
-        if not current_user:
+        if "AuthN" not in disabled_layers and not current_user:
             decision = AuthorizationDecision(
                 decision="DENY",
                 reason="Authentication required. Unauthenticated request.",
@@ -268,7 +289,7 @@ class CentralAuthorizationEngine:
         # ─────────────────────────────────────────────────────────────────────
 
         # Step 2: BFLA — Function Level Authorization Check
-        if resource_type == "ADMIN_FUNCTION" or (endpoint_path and "/admin/" in endpoint_path):
+        if "BFLA" not in disabled_layers and (resource_type == "ADMIN_FUNCTION" or (endpoint_path and "/admin/" in endpoint_path)):
             if user_role != "ADMIN" and not (user_role == "MANAGER" and action in ("READ", "AUDIT")):
                 decision = AuthorizationDecision(
                     decision="DENY",
@@ -286,7 +307,7 @@ class CentralAuthorizationEngine:
 
         # Step 3: RBAC Check (Role Permission Matrix)
         user_perms = ROLE_PERMISSIONS.get(user_role, [])
-        if required_permission and required_permission not in user_perms and user_role != "ADMIN":
+        if "RBAC" not in disabled_layers and required_permission and required_permission not in user_perms and user_role != "ADMIN":
             decision = AuthorizationDecision(
                 decision="DENY",
                 reason=f"RBAC Protection: User role '{user_role}' lacks required permission '{required_permission}'.",
@@ -302,7 +323,7 @@ class CentralAuthorizationEngine:
             return decision
 
         # Step 4: BOPLA Check (Property Level Authorization for UPDATE operations)
-        if action == "UPDATE" and requested_properties:
+        if "BOPLA" not in disabled_layers and action == "UPDATE" and requested_properties:
             injected_privileged = [p for p in requested_properties if p in PRIVILEGED_PROPERTIES]
             if injected_privileged and user_role != "ADMIN":
                 decision = AuthorizationDecision(
@@ -321,7 +342,7 @@ class CentralAuthorizationEngine:
                 return decision
 
         # Step 5: BOLA Check (Object Level Authorization & Ownership)
-        if resource_owner_id is not None:
+        if "BOLA" not in disabled_layers and resource_owner_id is not None:
             resource_owner_id_int = int(resource_owner_id) if str(resource_owner_id).isdigit() else resource_owner_id
             user_id_int = int(user_id) if str(user_id).isdigit() else user_id
 
@@ -341,7 +362,7 @@ class CentralAuthorizationEngine:
                 return decision
 
         # Step 6: ABAC Check (Department & Region contextual matching for Support / Manager)
-        if user_role == "SUPPORT":
+        if "ABAC" not in disabled_layers and user_role == "SUPPORT":
             res_dept = resource_attributes.get("department") or resource_attributes.get("assigned_department")
             if res_dept and res_dept != user_dept and res_dept != "Customer Support":
                 decision = AuthorizationDecision(
@@ -358,7 +379,7 @@ class CentralAuthorizationEngine:
                 log_decision(decision)
                 return decision
 
-        if user_role == "MANAGER":
+        if "ABAC" not in disabled_layers and user_role == "MANAGER":
             res_dept = resource_attributes.get("department")
             res_region = resource_attributes.get("region")
             if res_dept and res_dept != user_dept:
@@ -391,7 +412,7 @@ class CentralAuthorizationEngine:
                 return decision
 
         # Step 7: MAC Check (Sensitivity Level Lattice: Clearance >= Classification)
-        if resource_attributes.get("classification"):
+        if "MAC" not in disabled_layers and resource_attributes.get("classification"):
             res_class = resource_attributes["classification"]
             res_class_lvl = MAC_LEVELS.get(res_class.upper(), 1)
             if user_clearance_lvl < res_class_lvl:

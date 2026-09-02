@@ -82,13 +82,29 @@ npm run dev
 
 ---
 
+## 🔬 Research & Empirical Reproducibility Suite
+
+AuthzGraph includes a master experiment runner to reproduce all paper results, ablation matrices, and statistical figures with one command:
+
+```bash
+cd backend
+python -m experiments.run_all
+```
+
+This pipeline automatically executes:
+1. **HTTP Benchmark Harness (`experiments/benchmark.py`)**: Attacks the live backend API surface across 5 vector categories in both VULNERABLE and SECURE modes to compute Exposure Rates (ER), P50/P90/P99 Latency Percentiles, and False Positive Rates (FPR).
+2. **Layer-Ablation Study (`experiments/ablation.py`)**: Sweeps 7 policy layer configurations (disabling RBAC, BFLA, BOPLA, BOLA, ABAC, MAC independently) to empirically prove layer attribution.
+3. **Publication Chart Generator (`experiments/generate_charts.py`)**: Output high-resolution SVG and PNG charts saved under `backend/experiments/results/charts/`.
+
+---
+
 ## 🔍 Key Features
 
 - **OpenAPI v2/v3 Dynamic Ingestion**: Automatic endpoint schema parsing and dependency identification.
-- **Stateful Object Ownership Graph (NetworkX)**: Multi-user resource identity and ownership mapping (`User A -[OWNS]-> Resource 101`).
-- **Differential Payload Inspection**: Real-time detection of data leaks, HTTP anomalies, and unauthorized access responses.
-- **Automated Remediation Code Patching**: Instant copy-paste code fixes for FastAPI, Express, and Spring Boot.
-- **Out-of-the-Box Benchmark Suite**: Built-in target application suite for security testing validation.
+- **Stateful Object Ownership Graph**: Multi-user resource identity and ownership mapping (`User A -[OWNS]-> Resource 101`).
+- **6-Layer Defense-in-Depth Policy Pipeline**: Conjunction of RBAC, BFLA, BOPLA, BOLA, ABAC, and MAC checks for complete mediation.
+- **Empirical Layer-Ablation Harness**: Quantitative proof of individual layer necessity against OWASP API1, API3, and API5 vulnerabilities.
+- **Target Application Harness**: Integrated RideX benchmark API for security evaluation.
 
 ---
 
