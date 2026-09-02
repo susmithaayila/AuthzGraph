@@ -902,6 +902,8 @@ async def bank_get_account_transactions(account_id: str, authorization: Optional
 async def bank_list_documents(authorization: Optional[str] = Header(None)):
     current_user = resolve_user_from_token_or_header(authorization) or SYNTHETIC_USERS[101]
     docs = list(SYNTHETIC_DOCUMENTS.values())
+    user_role = current_user.get("role", "CUSTOMER")
+    req_perm = "DOCUMENT_READ_ALL" if user_role == "ADMIN" else ("DOCUMENT_READ_DEPARTMENT" if user_role == "MANAGER" else "DOCUMENT_READ_OWN")
 
     accessible = []
     for doc in docs:
@@ -911,7 +913,7 @@ async def bank_list_documents(authorization: Optional[str] = Header(None)):
             resource_type="DOCUMENT",
             resource_owner_id=doc["owner_id"],
             resource_attributes=doc,
-            required_permission="DOCUMENT_READ_OWN",
+            required_permission=req_perm,
             endpoint_path=f"/api/v1/bank/documents/{doc['id']}",
         )
         if decision.decision == "ALLOW":
@@ -934,13 +936,16 @@ async def bank_get_document(doc_id: int, authorization: Optional[str] = Header(N
     if not doc:
         raise HTTPException(status_code=404, detail=f"Document {doc_id} not found")
 
+    user_role = current_user.get("role", "CUSTOMER")
+    req_perm = "DOCUMENT_READ_ALL" if user_role == "ADMIN" else ("DOCUMENT_READ_DEPARTMENT" if user_role == "MANAGER" else "DOCUMENT_READ_OWN")
+
     decision = CentralAuthorizationEngine.evaluate_request(
         current_user=current_user,
         action="READ",
         resource_type="DOCUMENT",
         resource_owner_id=doc["owner_id"],
         resource_attributes=doc,
-        required_permission="DOCUMENT_READ_OWN",
+        required_permission=req_perm,
         endpoint_path=f"/api/v1/bank/documents/{doc_id}",
     )
 

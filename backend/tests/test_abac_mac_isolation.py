@@ -100,36 +100,35 @@ def test_abac_disabled_does_not_bypass_bola():
 # MAC No-Read-Up Tests
 
 def test_mac_read_up_violation_deny():
-    """Alice (CONFIDENTIAL L3) reading SECRET doc (504, L4) -> DENY (MAC)"""
+    """Alice (CONFIDENTIAL L3) reading SECRET doc owned by self (508, L4) -> DENY (MAC)"""
     alice = get_user(101)
-    doc_504 = get_doc(504)
+    doc_508 = get_doc(508)
     decision = CentralAuthorizationEngine.evaluate_request(
         current_user=alice,
         action="READ",
         resource_type="DOCUMENT",
-        resource_owner_id=doc_504["owner_id"],
-        resource_attributes=doc_504,
+        resource_owner_id=doc_508["owner_id"],
+        resource_attributes=doc_508,
         required_permission="DOCUMENT_READ_OWN",
-        endpoint_path="/api/v1/bank/documents/504",
-        disabled_layers=["BOLA"],
+        endpoint_path="/api/v1/bank/documents/508",
     )
     assert decision.decision == "DENY", "MAC should block CONFIDENTIAL user from reading SECRET doc"
     assert decision.policy == "MAC", f"Expected MAC policy, got {decision.policy}"
 
 
 def test_mac_disabled_read_up_allows():
-    """Same SECRET doc read with MAC+BOLA disabled -> ALLOW"""
+    """Same SECRET doc (508) read with only MAC disabled -> ALLOW (clean isolation without BOLA hack)"""
     alice = get_user(101)
-    doc_504 = get_doc(504)
+    doc_508 = get_doc(508)
     decision = CentralAuthorizationEngine.evaluate_request(
         current_user=alice,
         action="READ",
         resource_type="DOCUMENT",
-        resource_owner_id=doc_504["owner_id"],
-        resource_attributes=doc_504,
+        resource_owner_id=doc_508["owner_id"],
+        resource_attributes=doc_508,
         required_permission="DOCUMENT_READ_OWN",
-        endpoint_path="/api/v1/bank/documents/504",
-        disabled_layers=["MAC", "BOLA"],
+        endpoint_path="/api/v1/bank/documents/508",
+        disabled_layers=["MAC"],
     )
     assert decision.decision == "ALLOW", f"Expected ALLOW when MAC disabled, got: {decision.reason}"
 
@@ -144,7 +143,7 @@ def test_mac_disabled_does_not_bypass_abac():
         resource_type="DOCUMENT",
         resource_owner_id=doc_506["owner_id"],
         resource_attributes=doc_506,
-        required_permission="AUDIT_READ",
+        required_permission="DOCUMENT_READ_DEPARTMENT",
         endpoint_path="/api/v1/bank/documents/506",
         disabled_layers=["MAC"],
     )
@@ -206,3 +205,67 @@ def test_mac_same_level_write_is_allowed():
         endpoint_path="/api/v1/bank/documents/507/classify",
     )
     assert decision.decision == "ALLOW", f"Expected ALLOW for same-level write, got: {decision.reason}"
+
+
+# HTTP Route Integration Isolation Tests
+
+def test_http_abac_isolation_via_api():
+    """
+    HTTP integration test:
+    North MANAGER (token_manager_north) accessing /bank/documents/506
+    - With ABAC active -> DENY (403)
+    - With ABAC disabled -> ALLOW (200)
+    Proves ABAC layer isolation over HTTP.
+    """
+    from fastapi.testclient import TestClient
+    from main import app
+    client = TestClient(app)
+
+    headers = {"Authorization": "Bearer token_manager_north"}
+
+    # Ensure secure mode & all layers active
+    client.post("/api/v1/policy/mode", json={"mode": "secure"})
+    client.post("/api/v1/policy/active-layers", json={"layers": ["RBAC", "BFLA", "BOPLA", "BOLA", "ABAC", "MAC", "AuthN"]})
+
+    r_active = client.get("/api/v1/bank/documents/506", headers=headers)
+    assert r_active.status_code == 403, f"Expected 403 DENY with ABAC active, got {r_active.status_code}"
+    assert r_active.json().get("detail", {}).get("policy") == "ABAC"
+
+    # Disable ABAC
+    client.post("/api/v1/policy/active-layers", json={"layers": ["RBAC", "BFLA", "BOPLA", "BOLA", "MAC", "AuthN"]})
+    r_disabled = client.get("/api/v1/bank/documents/506", headers=headers)
+    assert r_disabled.status_code == 200, f"Expected 200 ALLOW with ABAC disabled, got {r_disabled.status_code}"
+
+    # Reset
+    client.post("/api/v1/policy/active-layers", json={"layers": ["RBAC", "BFLA", "BOPLA", "BOLA", "ABAC", "MAC", "AuthN"]})
+
+
+def test_http_mac_read_up_isolation_via_api():
+    """
+    HTTP integration test:
+    Alice (token_alice) accessing /bank/documents/508 (SECRET doc owned by Alice)
+    - With MAC active -> DENY (403)
+    - With MAC disabled -> ALLOW (200)
+    Proves MAC No-Read-Up layer isolation over HTTP.
+    """
+    from fastapi.testclient import TestClient
+    from main import app
+    client = TestClient(app)
+
+    headers = {"Authorization": "Bearer token_alice"}
+
+    client.post("/api/v1/policy/mode", json={"mode": "secure"})
+    client.post("/api/v1/policy/active-layers", json={"layers": ["RBAC", "BFLA", "BOPLA", "BOLA", "ABAC", "MAC", "AuthN"]})
+
+    r_active = client.get("/api/v1/bank/documents/508", headers=headers)
+    assert r_active.status_code == 403, f"Expected 403 DENY with MAC active, got {r_active.status_code}"
+    assert r_active.json().get("detail", {}).get("policy") == "MAC"
+
+    # Disable MAC
+    client.post("/api/v1/policy/active-layers", json={"layers": ["RBAC", "BFLA", "BOPLA", "BOLA", "ABAC", "AuthN"]})
+    r_disabled = client.get("/api/v1/bank/documents/508", headers=headers)
+    assert r_disabled.status_code == 200, f"Expected 200 ALLOW with MAC disabled, got {r_disabled.status_code}"
+
+    # Reset
+    client.post("/api/v1/policy/active-layers", json={"layers": ["RBAC", "BFLA", "BOPLA", "BOLA", "ABAC", "MAC", "AuthN"]})
+

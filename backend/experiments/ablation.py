@@ -84,8 +84,8 @@ def run_ablation_experiment(base_url: str = DEFAULT_BASE_URL, trials_per_config:
             if r_bfla.status_code == 200 or (disabled_layer == "BFLA" and r_bfla.json().get("detail", {}).get("policy") != "BFLA_PROTECTION"):
                 bfla_exposures += 1
 
-            # Test MAC No-Read-Up: Alice (CONFIDENTIAL L3) reading SECRET doc (504, L4)
-            r_mac = client.get("/bank/documents/504", headers=headers_alice)
+            # Test MAC No-Read-Up: Alice (CONFIDENTIAL L3) reading SECRET doc (508, L4, owned by Alice)
+            r_mac = client.get("/bank/documents/508", headers=headers_alice)
             if r_mac.status_code == 200:
                 mac_exposures += 1
 

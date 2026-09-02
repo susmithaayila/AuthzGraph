@@ -1,0 +1,266 @@
+{
+  "title": "AuthzGraph Empirical Research Benchmark Summary",
+  "timestamp": "20260902T125851Z",
+  "trials_per_vector": 40,
+  "modes": {
+    "vulnerable": {
+      "vectors": {
+        "BOLA_SINGLE_OBJECT": {
+          "mean": 1.841,
+          "std": 0.402,
+          "p50": 1.649,
+          "p90": 2.383,
+          "p99": 2.871,
+          "ci_95_low": 1.716,
+          "ci_95_high": 1.966,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "BOLA_ENUMERATION": {
+          "mean": 1.882,
+          "std": 0.494,
+          "p50": 1.728,
+          "p90": 2.677,
+          "p99": 3.546,
+          "ci_95_low": 1.729,
+          "ci_95_high": 2.035,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "BOPLA_MASS_ASSIGNMENT": {
+          "mean": 1.977,
+          "std": 0.508,
+          "p50": 1.823,
+          "p90": 2.645,
+          "p99": 3.491,
+          "ci_95_low": 1.819,
+          "ci_95_high": 2.134,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "BFLA_ADMIN_PROBING": {
+          "mean": 2.842,
+          "std": 0.656,
+          "p50": 2.738,
+          "p90": 3.853,
+          "p99": 4.501,
+          "ci_95_low": 2.639,
+          "ci_95_high": 3.046,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "BFLA_VERB_SWITCHING": {
+          "mean": 2.39,
+          "std": 0.562,
+          "p50": 2.258,
+          "p90": 3.333,
+          "p99": 4.048,
+          "ci_95_low": 2.216,
+          "ci_95_high": 2.564,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "ABAC_CROSS_REGION": {
+          "mean": 2.431,
+          "std": 0.678,
+          "p50": 2.217,
+          "p90": 3.345,
+          "p99": 4.59,
+          "ci_95_low": 2.221,
+          "ci_95_high": 2.641,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "ABAC_CROSS_DEPARTMENT": {
+          "mean": 2.128,
+          "std": 0.497,
+          "p50": 2.103,
+          "p90": 2.936,
+          "p99": 3.832,
+          "ci_95_low": 1.974,
+          "ci_95_high": 2.282,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "MAC_READ_UP_VIOLATION": {
+          "mean": 2.276,
+          "std": 0.594,
+          "p50": 2.147,
+          "p90": 2.858,
+          "p99": 4.836,
+          "ci_95_low": 2.092,
+          "ci_95_high": 2.46,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        },
+        "MAC_WRITE_DOWN_VIOLATION": {
+          "mean": 2.241,
+          "std": 0.69,
+          "p50": 2.272,
+          "p90": 3.267,
+          "p99": 3.923,
+          "ci_95_low": 2.027,
+          "ci_95_high": 2.454,
+          "exposure_rate_pct": 100.0,
+          "trials": 40,
+          "exposures": 40
+        }
+      },
+      "control_legitimate": {
+        "mean": 2.253,
+        "std": 0.709,
+        "p50": 2.304,
+        "p90": 3.171,
+        "p99": 3.495,
+        "ci_95_low": 2.034,
+        "ci_95_high": 2.473,
+        "false_positive_rate_pct": 0.0,
+        "denials": 0,
+        "trials": 40
+      },
+      "overall_exposure_rate_pct": 100.0
+    },
+    "secure": {
+      "vectors": {
+        "BOLA_SINGLE_OBJECT": {
+          "mean": 1.641,
+          "std": 0.383,
+          "p50": 1.525,
+          "p90": 2.347,
+          "p99": 2.683,
+          "ci_95_low": 1.522,
+          "ci_95_high": 1.76,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "BOLA_ENUMERATION": {
+          "mean": 1.708,
+          "std": 0.416,
+          "p50": 1.689,
+          "p90": 2.18,
+          "p99": 3.018,
+          "ci_95_low": 1.579,
+          "ci_95_high": 1.837,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "BOPLA_MASS_ASSIGNMENT": {
+          "mean": 5.305,
+          "std": 3.045,
+          "p50": 5.378,
+          "p90": 9.848,
+          "p99": 13.049,
+          "ci_95_low": 4.362,
+          "ci_95_high": 6.249,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "BFLA_ADMIN_PROBING": {
+          "mean": 10.794,
+          "std": 9.731,
+          "p50": 5.809,
+          "p90": 28.855,
+          "p99": 36.618,
+          "ci_95_low": 7.778,
+          "ci_95_high": 13.81,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "BFLA_VERB_SWITCHING": {
+          "mean": 16.973,
+          "std": 24.364,
+          "p50": 10.975,
+          "p90": 30.286,
+          "p99": 119.948,
+          "ci_95_low": 9.423,
+          "ci_95_high": 24.524,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "ABAC_CROSS_REGION": {
+          "mean": 42.131,
+          "std": 55.574,
+          "p50": 10.661,
+          "p90": 131.744,
+          "p99": 229.168,
+          "ci_95_low": 24.908,
+          "ci_95_high": 59.354,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "ABAC_CROSS_DEPARTMENT": {
+          "mean": 52.474,
+          "std": 76.359,
+          "p50": 10.738,
+          "p90": 156.325,
+          "p99": 330.026,
+          "ci_95_low": 28.81,
+          "ci_95_high": 76.138,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "MAC_READ_UP_VIOLATION": {
+          "mean": 43.181,
+          "std": 62.022,
+          "p50": 7.163,
+          "p90": 128.313,
+          "p99": 287.596,
+          "ci_95_low": 23.961,
+          "ci_95_high": 62.402,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        },
+        "MAC_WRITE_DOWN_VIOLATION": {
+          "mean": 46.806,
+          "std": 70.033,
+          "p50": 7.08,
+          "p90": 147.546,
+          "p99": 326.894,
+          "ci_95_low": 25.103,
+          "ci_95_high": 68.51,
+          "exposure_rate_pct": 0.0,
+          "trials": 40,
+          "exposures": 0
+        }
+      },
+      "control_legitimate": {
+        "mean": 40.807,
+        "std": 46.003,
+        "p50": 14.75,
+        "p90": 114.912,
+        "p99": 138.063,
+        "ci_95_low": 26.551,
+        "ci_95_high": 55.064,
+        "false_positive_rate_pct": 0.0,
+        "denials": 0,
+        "trials": 40
+      },
+      "overall_exposure_rate_pct": 0.0
+    }
+  },
+  "executive_summary": {
+    "vulnerable_mode_exposure_pct": 100.0,
+    "secure_mode_exposure_pct": 0.0,
+    "exposure_reduction_pct": 100.0,
+    "mean_latency_vulnerable_ms": 2.223,
+    "mean_latency_secure_ms": 24.557,
+    "latency_overhead_ms": 22.334,
+    "false_positive_rate_secure_pct": 0.0
+  }
+}

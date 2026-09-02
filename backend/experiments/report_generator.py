@@ -1,4 +1,4 @@
-﻿"""
+"""
 AuthzGraph Report Generator
 Reads latest_summary.json and latest_ablation_matrix.json and emits
 a ready-to-paste Markdown (and optional LaTeX) results table.
@@ -103,9 +103,9 @@ def render_benchmark_latex(summary: dict) -> str:
         r"\hline",
         r"\textbf{Metric} & \textbf{VULNERABLE} & \textbf{SECURE} \\",
         r"\hline",
-        f"Overall ER & {es.get('vulnerable_mode_exposure_pct', 'N/A')}\% & {es.get('secure_mode_exposure_pct', 'N/A')}\% \\\\",
+        f"Overall ER & {es.get('vulnerable_mode_exposure_pct', 'N/A')}\\% & {es.get('secure_mode_exposure_pct', 'N/A')}\\% \\\\",
         f"Latency Overhead & --- & +{es.get('latency_overhead_ms', 'N/A')} ms \\\\",
-        f"False Positive Rate & --- & {es.get('false_positive_rate_secure_pct', 'N/A')}\% \\\\",
+        f"False Positive Rate & --- & {es.get('false_positive_rate_secure_pct', 'N/A')}\\% \\\\",
         r"\hline",
         r"\end{tabular}",
         r"\caption{AuthzGraph Benchmark Results}",
@@ -120,6 +120,12 @@ def main():
     parser.add_argument("--latex", action="store_true", help="Also emit LaTeX table")
     parser.add_argument("--output", type=str, default=None, help="Save Markdown report to file")
     args = parser.parse_args()
+
+    if hasattr(sys.stdout, "reconfigure"):
+        try:
+            sys.stdout.reconfigure(encoding="utf-8")
+        except Exception:
+            pass
 
     summary = load_json(SUMMARY_PATH)
     ablation = load_json(ABLATION_PATH)
@@ -136,11 +142,17 @@ def main():
         + md_ablation
     )
 
-    print(full_report)
+    try:
+        print(full_report)
+    except Exception:
+        print(full_report.encode("ascii", "replace").decode("ascii"))
 
     if args.latex:
         print("\n\n--- LaTeX ---\n")
-        print(render_benchmark_latex(summary))
+        try:
+            print(render_benchmark_latex(summary))
+        except Exception:
+            pass
 
     if args.output:
         with open(args.output, "w", encoding="utf-8") as f:

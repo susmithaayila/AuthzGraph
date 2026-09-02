@@ -1,7 +1,7 @@
 {
   "title": "AuthzGraph Layer-Ablation Matrix Results",
-  "timestamp": "20260901T081834Z",
-  "trials_per_config": 15,
+  "timestamp": "20260902T130159Z",
+  "trials_per_config": 20,
   "ablation_matrix": [
     {
       "disabled_layer": "None",
@@ -19,7 +19,9 @@
       "bopla_exposure_pct": 0.0,
       "bfla_exposure_pct": 0.0,
       "mac_exposure_pct": 0.0,
-      "total_trials_per_class": 15
+      "abac_exposure_pct": 0.0,
+      "mac_write_exposure_pct": 0.0,
+      "total_trials_per_class": 20
     },
     {
       "disabled_layer": "RBAC",
@@ -36,7 +38,9 @@
       "bopla_exposure_pct": 0.0,
       "bfla_exposure_pct": 0.0,
       "mac_exposure_pct": 0.0,
-      "total_trials_per_class": 15
+      "abac_exposure_pct": 0.0,
+      "mac_write_exposure_pct": 0.0,
+      "total_trials_per_class": 20
     },
     {
       "disabled_layer": "BFLA",
@@ -53,7 +57,9 @@
       "bopla_exposure_pct": 0.0,
       "bfla_exposure_pct": 100.0,
       "mac_exposure_pct": 0.0,
-      "total_trials_per_class": 15
+      "abac_exposure_pct": 0.0,
+      "mac_write_exposure_pct": 0.0,
+      "total_trials_per_class": 20
     },
     {
       "disabled_layer": "BOPLA",
@@ -70,7 +76,9 @@
       "bopla_exposure_pct": 100.0,
       "bfla_exposure_pct": 0.0,
       "mac_exposure_pct": 0.0,
-      "total_trials_per_class": 15
+      "abac_exposure_pct": 0.0,
+      "mac_write_exposure_pct": 0.0,
+      "total_trials_per_class": 20
     },
     {
       "disabled_layer": "BOLA",
@@ -87,7 +95,9 @@
       "bopla_exposure_pct": 0.0,
       "bfla_exposure_pct": 0.0,
       "mac_exposure_pct": 0.0,
-      "total_trials_per_class": 15
+      "abac_exposure_pct": 0.0,
+      "mac_write_exposure_pct": 0.0,
+      "total_trials_per_class": 20
     },
     {
       "disabled_layer": "ABAC",
@@ -104,7 +114,9 @@
       "bopla_exposure_pct": 0.0,
       "bfla_exposure_pct": 0.0,
       "mac_exposure_pct": 0.0,
-      "total_trials_per_class": 15
+      "abac_exposure_pct": 100.0,
+      "mac_write_exposure_pct": 0.0,
+      "total_trials_per_class": 20
     },
     {
       "disabled_layer": "MAC",
@@ -120,8 +132,10 @@
       "bola_exposure_pct": 0.0,
       "bopla_exposure_pct": 0.0,
       "bfla_exposure_pct": 0.0,
-      "mac_exposure_pct": 0.0,
-      "total_trials_per_class": 15
+      "mac_exposure_pct": 100.0,
+      "abac_exposure_pct": 0.0,
+      "mac_write_exposure_pct": 100.0,
+      "total_trials_per_class": 20
     }
   ]
 }

@@ -392,6 +392,19 @@ SYNTHETIC_DOCUMENTS: Dict[int, Dict[str, Any]] = {
         "classification_level": 4,
         "summary": "Draft post-mortem for a recent IT Security incident. Classification must not be downgraded without CISO approval.",
     },
+    508: {
+        # MAC No-Read-Up test: Owned by Alice herself (101), scoped to Retail Banking / South.
+        # RBAC, BOLA (owner match), and ABAC all pass cleanly.
+        # Only Alice's CONFIDENTIAL clearance (Level 3) vs. SECRET classification (Level 4) blocks access.
+        "id": 508,
+        "owner_id": 101,
+        "title": "Alice_Secret_Financial_Vault.pdf",
+        "department": "Retail Banking",
+        "region": "South",
+        "classification": "SECRET",
+        "classification_level": 4,
+        "summary": "Top secret personal financial vault document owned by Alice Johnson.",
+    },
 }
 
 

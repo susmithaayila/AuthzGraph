@@ -28,7 +28,7 @@ ATTACK_VECTORS = [
     "BFLA_VERB_SWITCHING",
     "ABAC_CROSS_REGION",        # NEW: North MANAGER accessing South doc (506)
     "ABAC_CROSS_DEPARTMENT",    # NEW: North MANAGER accessing South-owned audit (cross-region variant)
-    "MAC_READ_UP_VIOLATION",    # NEW: CONFIDENTIAL user reading SECRET doc (504)
+    "MAC_READ_UP_VIOLATION",    # NEW: CONFIDENTIAL user reading SECRET doc owned by self (508)
     "MAC_WRITE_DOWN_VIOLATION", # NEW: SECRET-clearance admin downgrading SECRET doc (507) to PUBLIC
 ]
 
@@ -173,9 +173,9 @@ def run_http_benchmark(base_url: str = DEFAULT_BASE_URL, trials_per_vector: int 
                         exposed = True
 
                 elif vector == "MAC_READ_UP_VIOLATION":
-                    # Alice (CONFIDENTIAL, clearance_level=3) tries to read doc 504 (SECRET, level=4).
-                    # RBAC, BOLA, and ABAC would otherwise pass. Only MAC blocks it.
-                    res = client.get("/bank/documents/504", headers=headers_alice)
+                    # Alice (CONFIDENTIAL, clearance_level=3) tries to read doc 508 (SECRET, level=4, owned by Alice).
+                    # RBAC, BOLA (owner match), and ABAC pass cleanly. Only MAC blocks it.
+                    res = client.get("/bank/documents/508", headers=headers_alice)
                     status_code = res.status_code
                     if status_code == 200:
                         exposed = True

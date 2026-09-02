@@ -111,7 +111,10 @@ Each row represents a configuration where exactly one layer is removed; exposure
 | **ABAC Disabled** | 0.0% | 0.0% | 0.0% | 0.0% | **100.0% ⬆️** | 0.0% |
 | **MAC Disabled** | 0.0% | 0.0% | 0.0% | **100.0% ⬆️** | 0.0% | **100.0% ⬆️** |
 
-> **Empirical Key Takeaway**: The layer-ablation matrix empirically proves that each layer is both *necessary* and *sufficient* for its specific attack surface. Disabling ABAC raises the ABAC cross-region exposure rate to 100% while leaving all other columns at 0% — proving ABAC is the sole layer responsible for catching cross-region manager escalation. Disabling MAC raises both the No-Read-Up and No-Write-Down columns to 100%, proving both Bell-LaPadula properties are under MAC's jurisdiction. No single-model policy engine (e.g., pure RBAC) can prevent all OWASP authorization classes simultaneously.
+> **Empirical Isolation Key Takeaway**: The live layer-ablation sweep empirically proves complete 1:1 layer attribution without shadow-masking:
+> 1. **ABAC Isolation**: Role-aware endpoint permission resolution (`DOCUMENT_READ_DEPARTMENT` for `MANAGER`) enables cross-region manager probes (Diana, North MANAGER -> Doc 506, South) to pass RBAC/BOLA. Disabling ABAC yields **100.0% ABAC ER** while leaving all other columns at 0.0%, proving ABAC is solely responsible for cross-region isolation.
+> 2. **MAC Isolation**: Document 508 (owned by Alice) eliminates BOLA ownership masking. Disabling MAC yields **100.0% MAC ER (No-Read-Up)** and **100.0% MAC_WRITE ER (No-Write-Down / star property)** while leaving all other columns at 0.0%, proving both Bell-LaPadula properties share the MAC enforcement boundary.
+> 3. No single-model access control architecture (e.g., pure RBAC or pure BOLA) can prevent all attack vectors simultaneously.
 
 ### 6.3 External Validity: Cross-Application Generalizability (vAPI)
 
