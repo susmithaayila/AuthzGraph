@@ -91,14 +91,15 @@ The evaluation suite comprises two distinct experimental methodologies:
 
 | Metric | VULNERABLE Mode | SECURE Mode (AuthzGraph Pipeline) |
 | :--- | :--- | :--- |
-| **Overall Vulnerability Exposure Rate** | **100.0% (95% CI: [100.0%, 100.0%])** | **0.0% (100% Elimination)** |
-| **BOLA Exposure (Single Object & Sweep)** | 100.0% | 0.0% |
-| **BOPLA Exposure (Mass Assignment Injection)** | 100.0% | 0.0% |
-| **BFLA Exposure (Admin Probing & Verb Switch)**| 100.0% | 0.0% |
-| **ABAC Exposure (Cross-Region Manager)** | 100.0% | 0.0% |
-| **MAC No-Read-Up Exposure** | 100.0% | 0.0% |
-| **MAC No-Write-Down Exposure (Star Property)**| 100.0% | 0.0% |
-| **Mean Evaluation Latency Overhead** | — | < 2.0 ms (sub-millisecond per-layer) |
+| **Overall Vulnerability Exposure Rate** | **81.2% (95% CI: [77.1%, 85.0%])** | **0.0% (95% CI: [0.0%, 0.9%])** |
+| **BOLA Exposure (Single Object & Sweep)** | 71.2% (77.5% single / 65.0% enum) | 0.0% |
+| **BOPLA Exposure (Mass Assignment Injection)** | 67.5% (95% CI: [50.9%, 81.4%]) | 0.0% |
+| **BFLA Exposure (Admin Probing & Verb Switch)**| 88.8% (97.5% admin / 80.0% verb) | 0.0% |
+| **ABAC Exposure (Cross-Region & Cross-Dept)**  | 88.8% (85.0% region / 92.5% dept) | 0.0% |
+| **MAC No-Read-Up Exposure** | 87.5% (95% CI: [73.2%, 95.8%]) | 0.0% |
+| **MAC No-Write-Down Exposure (Star Property)**| 90.0% (95% CI: [76.3%, 97.2%]) | 0.0% |
+| **RBAC Permission Denied Exposure** | 70.0% (95% CI: [53.5%, 83.4%]) | 0.0% |
+| **Mean Evaluation Latency Overhead** | — | -0.350 ms |
 | **False Positive Rate (Control Set)** | 0.0% | 0.0% (Zero Usability Impact) |
 
 ### 6.2 9-Layer Pipeline Ablation Matrix
