@@ -4,6 +4,7 @@ Evaluates Authentication, RBAC, ABAC, MAC, Object Ownership (BOLA),
 Property Schemas (BOPLA), and Function Boundaries (BFLA).
 """
 import copy
+import time
 from datetime import datetime, timezone
 from typing import Dict, List, Any, Optional
 
@@ -143,6 +144,7 @@ class AuthorizationDecision:
         status_code: int = 200,
         mode: Optional[str] = None,
         extra_details: Optional[Dict[str, Any]] = None,
+        evaluation_latency_ms: float = 0.0,
     ):
         self.decision = decision
         self.reason = reason
@@ -156,6 +158,7 @@ class AuthorizationDecision:
         self.mode = mode or CURRENT_SECURITY_MODE
         self.timestamp = datetime.now(timezone.utc).isoformat()
         self.extra_details = extra_details or {}
+        self.evaluation_latency_ms = evaluation_latency_ms
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -171,7 +174,9 @@ class AuthorizationDecision:
             "mode": self.mode,
             "timestamp": self.timestamp,
             "extra_details": self.extra_details,
+            "evaluation_latency_ms": self.evaluation_latency_ms,
         }
+
 
 
 SECURITY_DECISION_LOGS: List[Dict[str, Any]] = []
@@ -229,6 +234,7 @@ class CentralAuthorizationEngine:
     In VULNERABLE mode, authorization checks are bypassed to demonstrate security vulnerabilities.
     In SECURE mode, full complete mediation is enforced.
     """
+    last_evaluation_latency_ms: float = 0.0
 
     @classmethod
     def evaluate_request(
@@ -243,10 +249,41 @@ class CentralAuthorizationEngine:
         endpoint_path: Optional[str] = None,
         disabled_layers: Optional[List[str]] = None,
     ) -> AuthorizationDecision:
+        t0 = time.perf_counter()
+        decision = cls._evaluate_internal(
+            current_user=current_user,
+            action=action,
+            resource_type=resource_type,
+            resource_owner_id=resource_owner_id,
+            resource_attributes=resource_attributes,
+            requested_properties=requested_properties,
+            required_permission=required_permission,
+            endpoint_path=endpoint_path,
+            disabled_layers=disabled_layers,
+        )
+        eval_ms = (time.perf_counter() - t0) * 1000.0
+        cls.last_evaluation_latency_ms = eval_ms
+        decision.evaluation_latency_ms = eval_ms
+        return decision
+
+    @classmethod
+    def _evaluate_internal(
+        cls,
+        current_user: Optional[Dict[str, Any]],
+        action: str,
+        resource_type: str,
+        resource_owner_id: Optional[Any] = None,
+        resource_attributes: Optional[Dict[str, Any]] = None,
+        requested_properties: Optional[List[str]] = None,
+        required_permission: Optional[str] = None,
+        endpoint_path: Optional[str] = None,
+        disabled_layers: Optional[List[str]] = None,
+    ) -> AuthorizationDecision:
         if disabled_layers is None:
             disabled_layers = list(ALL_VALID_LAYERS - ACTIVE_LAYERS)
         resource_attributes = resource_attributes or {}
         mode = get_security_mode()
+
 
         # Step 1: Authentication Check
         if "AuthN" not in disabled_layers and not current_user:

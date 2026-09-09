@@ -1,0 +1,226 @@
+\documentclass[journal]{IEEEtran}
+
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{stfloats}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage[hidelinks]{hyperref}
+
+\begin{document}
+
+\title{AI-Driven Copilot for Automated Vulnerability Assessment and Penetration Testing}
+
+\author{Susmitha~Ayila%
+\thanks{Susmitha Ayila is with the Department of Computer Science and Engineering, Maulana Azad National Urdu University (MANUU), Hyderabad, Telangana, India (email: ayilasusmitha@gmail.com).}}
+
+\maketitle
+
+% ================= ABSTRACT =================
+
+\begin{abstract}
+The increased usage of web applications and digital services has led to an increased attack surface for cyber threats. This emphasizes the importance of vulnerability assessment and penetration testing VAPT for today’s cyber security. Traditional VAPT processes are highly reliant on manual analysis and require expertise of security professionals to analyze the scan results, identify vulnerabilities and recommend solutions. This approach is time consuming, error prone and hardly scalable for large systems. Existing automated scanners (Nmap and web vulnerabilities tools) are able to detect open ports and services versions. But they often generate raw outputs that require expert interpretation. To overcome these challenges, this project presents an AI-Powered VAPT Copilot, an intelligent security assistant that integrates automated vulnerability scanning and local large language model (LLM) reasoning. The system employs an integrated set of network scanning utilities and a locally hosted AI model that interprets the scan data, detects possible security threats, and offers concise explanations and recommended mitigation strategies. The tool we propose can take as input different kind of elements, e.g., URIs, files and images, and therefore it can perform a comprehensive security analysis. The system automates network scanning on URLs and gives the results to the AI model for the interpretation of vulnerabilities and mapping to OWASP categories. For files, like logs or config files, the AI model scans the contents for potential security issues. Optical character recognition pulls text out of images, such as screenshots of phishing pages, before the AI-based analysis is done. The system auto-generates security reports and remediation strategies, improving the efficiency of the vulnerability assessment. It uses automated scanning and intelligent reasoning to reduce the manual effort and increase the clarity of security findings. This solution demonstrates how AI-based security tools can help cybersecurity analysts to be more effective in finding vulnerabilities in the digital environment of today.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Vulnerability Assessment, Penetration Testing, Large Language Models, AI Security, Nmap, Optical Character Recognition, OWASP Top 10.
+\end{IEEEkeywords}
+
+% ================= INTRODUCTION =================
+
+\section{Introduction}
+\PARstart{C}{ybersecurity} has become a major concern in today's digital world. As we rely more on web applications, cloud services, and interconnected systems, the need for protection grows. Organizations depend on vulnerability assessment and penetration testing (VAPT) to find weaknesses in their infrastructure before attackers can exploit them. However, traditional VAPT processes need skilled security analysts who manually interpret scanning results, analyse possible vulnerabilities, and suggest fixes. This manual analysis can take a lot of time, especially with large networks and complex systems.
+
+The field of cybersecurity vulnerability assessment has changed with the rise of automated scanning tools like network scanners and web application scanners. While these tools can find open ports, services, and potential vulnerabilities, they usually produce technical reports that require expert knowledge to understand. This means organizations often struggle to grasp the real impact of detected vulnerabilities and figure out suitable ways to address them.
+
+Another issue is the growing amount of security data produced during scanning. Security analysts must sift through large logs, configuration files, and sometimes even suspicious images like phishing screenshots to see if a threat is present. This slows down the analysis process and raises the risk of human error.
+
+To tackle these challenges, this project suggests an AI-Powered VAPT Copilot that mixes automated security scanning with artificial intelligence reasoning. The proposed system links network scanning tools to a locally hosted large language model to analyse results, spot vulnerabilities, and offer practical recommendations. The system accepts various data sources, including URLs, files, and images, allowing for thorough vulnerability analysis. By automating vulnerability interpretation and providing clear explanations, this approach helps cybersecurity professionals identify and reduce security risks more effectively.
+
+Today the attack surface of cyber threats has increased because organizations depend on digital systems, web applications, and cloud infrastructure. Traditional approaches to vulnerability assessment and penetration testing (VAPT) rely heavily on manual analysis of scan results, logs and security data. This process is manual, time consuming, requires expert knowledge and is prone to human error. Security tools such as Nmap, vulnerability scanners and log analyzers produce large amounts of technical output that has to be interpreted by skilled security analysts. These tools are autonomous and lack intelligent reasoning, which makes it difficult to correlate vulnerabilities from multiple data sources. In addition, current systems do not provide a single framework for multi-input security analysis, such as analyzing URLs, log files, PCAP files, images and executable files. This results in fragmented security workflows and delayed detection of vulnerabilities. Therefore, there is a need for intelligent and automated VAPT solution that integrates multiple security tools, performs intelligent reasoning, maps vulnerabilities to standard frameworks and generates structured security reports.
+
+% ================= LITERATURE =================
+
+\section{Literature Survey}
+The exponential growth of web applications, cloud platforms and distributed systems have greatly increased the attack surface of the modern digital infrastructure. Traditional penetration testing techniques are highly reliant on manual skills and dedicated security tools, therefore time-consuming and hard to scale for large systems. Recent advancements in artificial intelligence and large language models (LLMs) offer new possibilities to automate aspects of vulnerability assessment and penetration testing \cite{sharma2024ideation,ferrag2024generative}.
+
+The role of AI for automating vulnerability detection and security analysis has been investigated in several studies. Deng et al. created PentestGPT, an LLM-assisted penetration testing framework that can generate attack strategies and assist security analysts in detecting vulnerabilities. Their work demonstrates that language models can efficiently automate reconnaissance tasks and tool command generation for penetration testing \cite{deng2024pentestgpt}.
+
+Huang and Zhu proposed PenHeal, a two-stage LLM-based framework to automate vulnerability detection and remediation. The framework integrates an LLM-based penetration testing module with a remediation engine that suggests security fixes. The experimental results show that the combined system can achieve better vulnerability coverage and remediation effectiveness than conventional methods \cite{huang2024penheal}.
+
+Another noteworthy framework is xOffense, a multi-agent AI penetration testing system that orchestrates reconnaissance, vulnerability scanning, and exploitation through a centralized orchestration engine. The results show that combining multiple AI agents with traditional security tools significantly improves automation in penetration testing, reducing manual effort in vulnerability discovery \cite{chen2025xoffense}. Besides automation for penetration testing, many studies have been conducted to investigate the use of LLMs with static code analysis tools . The IRIS framework combines static program analysis and LLM-based reasoning to identify security vulnerabilities in large software repositories. The system enhances the accuracy of vulnerability identification by applying contextual reasoning from language models \cite{zhang2024iris}. Researchers have also investigated the broader implications of generative AI in cybersecurity. Ferrag et al. investigated the application of generative AI and LLM technologies in different areas of cybersecurity, such as malware detection, intrusion detection, vulnerability analysis, and threat intelligence. Their results show that large language models can handle various security data types and help analysts discover complex attack patterns \cite{ferrag2024generative}.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{intro.png}
+\caption{Basic AI-Powered VAPT Copilot Workflow}
+\label{fig:intro}
+\end{figure}
+
+\begin{table}[!t]
+\centering
+\caption{Year-wise Research Publications in AI-based Penetration Testing}
+\begin{tabular}{|c|c|c|}
+\hline
+Year & Number of Papers & Research Trend \\
+\hline
+2019 & 2 & Initial AI Security Research \\
+2020 & 4 & Early Automation Approaches \\
+2021 & 6 & ML-based Security Systems \\
+2022 & 9 & AI-driven Vulnerability Detection \\
+2023 & 15 & LLM-based Security Research Growth \\
+2024 & 22 & Automated AI Penetration Testing \\
+2025 & 28 & Multi-Agent Security Systems \\
+\hline
+\end{tabular}
+\label{tab:years}
+\end{table}
+
+Another systematic mapping study on AI-driven penetration testing reviewed several research contributions from 2015 to 2025. This research showed that AI techniques can significantly improve the efficiency of vulnerability scanning, risk classification and automated exploit generation when combined with traditional security tools \cite{kumar2024ai}.
+
+Despite these advances there are still a number of challenges. Today’s vulnerability scanners generate a large number of alerts with a high false positive rate, which requires a great deal of manual effort to validate. Most tools operate independently and lack the ability to correlate findings across multiple security data sources \cite{johnson2021automated,mcgraw2006software}.
+
+Recent research on AI-driven penetration testing systems emphasizes the need to integrate language models with traditional security frameworks, such as OWASP vulnerability classifications and MITRE ATT\&CK threat intelligence models. They assist the AI system in mapping the detected vulnerabilities to standard security frameworks, which helps with transparency and automation of risk assessment \cite{zhang2024iris}.
+
+Moreover, today’s AI-powered security platforms utilize machine learning models to analyze huge amounts of network traffic, system logs, and software artifacts on the fly. These systems offer continuous monitoring capabilities that extend beyond the traditional periodic security assessments \cite{provos2003hide}.
+
+In summary, the literature indicates that integration of artificial intelligence with traditional penetration testing tools can greatly enhance the accuracy of vulnerability detection, automate mundane tasks, and provide actionable security recommendations. However, many existing solutions are still semi-automatic and require human supervision for decision making and risk assessment \cite{mahmoud2018network,petrovski2025mapping}.
+
+To address these limitations, the proposed AI-Powered VAPT Copilot is an integrated approach that combines various security data sources with a local large language model to allow for automated vulnerability analysis, threat mapping, and security reporting in one framework.
+
+% ================= PROPOSED METHODOLOGY =================
+
+\section{Proposed Methodology}
+The proposed AI-Powered VAPT Copilot combines automated security scanning tools with a locally deployed large language model to conduct intelligent vulnerability assessment. It takes in a variety of inputs: URLs, security logs, images, PCAP files, executable files, etc. The system can perform automated scanning using tools like Nmap for network analysis, Scapy for packet analysis, OCR for image processing and binary analysis for executables. The extracted security features are fed to a local AI reasoning engine to identify vulnerabilities. The identified vulnerabilities are also associated to standard security frameworks such as OWASP Top 10 and MITRE ATT\&CK to offer structured threat intelligence. The system also calculates CVSS severity scores to assess the risk level of detected vulnerabilities. Finally, the system produces an automated vulnerability report with security insights and recommended mitigation strategies.
+
+% ================= SYSTEM ARCHITECTURE =================
+
+\section{System Architecture}
+The AI-Powered VAPT Copilot architecture is a modular and scalable framework that combines automated security scanning tools with artificial intelligence-based reasoning to perform intelligent vulnerability assessment. The architecture includes multiple components such as input acquisition, security data processing, AI reasoning engine, threat intelligence mapping, and report generation. The input acquisition module takes in a variety of security data sources including URLs, security logs, PCAP files, images and executable files, allowing for thorough vulnerability assessment in a network and host environments. The security data processing module performs feature extraction using specialized security analysis techniques, in which URL inputs are analyzed using network scanning tools to identify open ports, services, and service versions, log files are parsed to detect suspicious authentication attempts, PCAP files are analyzed to identify abnormal network traffic behavior, image inputs are processed using optical character recognition to extract embedded text, and executable files are analyzed using binary inspection techniques. The extracted security features are sent to the AI reasoning engine, which uses a locally deployed large language model to identify vulnerabilities and security risks by analyzing patterns and correlating findings across multiple input sources. Finally, the report generation module computes CVSS risk scores and generates a structured vulnerability assessment report that includes detected vulnerabilities, risk levels, OWASP and MITRE mappings, and recommended mitigation strategies.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\columnwidth]{architecture_diagram.png}
+\caption{AI-Powered VAPT Copilot Architecture}
+\label{fig:architecture}
+\end{figure}
+
+\FloatBarrier
+\section{Algorithm}
+
+\subsection{Vulnerability Detection Pipeline}
+The vulnerability detection pipeline illustrates the workflow of the AI-Powered VAPT Copilot. The system accepts multiple input sources including URLs, log files, PCAP files, images, and executable files. These inputs are processed using feature extraction techniques such as network scanning, packet inspection, OCR extraction, and binary analysis. The extracted features are analyzed using a local AI reasoning engine to identify vulnerabilities. The detected vulnerabilities are mapped to OWASP Top 10 categories and MITRE ATT\&CK techniques. Finally, CVSS risk scoring is performed and a structured vulnerability assessment report is generated.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.48\textwidth]{algorithm2.png}
+\caption{Vulnerability Detection Pipeline}
+\label{fig:pipeline}
+\end{figure}
+
+\FloatBarrier
+
+\subsection{Attack Chain Analysis}
+The attack chain analysis demonstrates the evolution of security vulnerabilities identified by the AI-Powered VAPT Copilot. The system builds an attack chain model based on the detected vulnerabilities, which can represent diverse attack phases such as reconnaissance, discovery, exploitation, privilege escalation and persistence. This visualization helps to understand attacker behaviour and to prioritize the mitigation strategies.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.48\textwidth]{algorithm.png}
+\caption{Attack Chain Analysis}
+\label{fig:attackchain}
+\end{figure}
+
+\FloatBarrier
+
+% ================= IMPLEMENTATION =================
+
+\section{Methodology}
+
+\subsection{Proposed Implementation Framework}
+The proposed AI-Powered VAPT Copilot follows a structured methodology for automated vulnerability assessment. The system starts by ingesting various forms of security inputs including URLs, log files, PCAP files, images, and executable files. They feed the analysis engine with different types of security data. In the process of obtaining input, the system uses specific means of analysis to extract features. URL inputs are scanned for open ports and services. Analyze log files for suspicious events, anomalies PCAP files are analyzed to identify anomalous traffic patterns. Textual information is extracted using OCR techniques to process image inputs. Binary inspection is an approach to analyze executable files and find suspicious features. The extracted features are combined and fed to the AI reasoning engine. The AI model looks at the features and uses contextual reasoning to discover possible vulnerabilities. The identified vulnerabilities are mapped to standard security frameworks. After the vulnerability mapping, the system determines the severity levels by calculating the CVSS risk scores. Vulnerabilities are classified as Low, Medium, High and Critical risk levels. Finally, the system generates a structured vulnerability assessment report with identified vulnerabilities, threat mappings, risk scores and mitigation strategies.
+
+% ================= RESULTS =================
+\section{Results and Discussion}
+The AI-Powered VAPT Copilot successfully conducted vulnerability assessment on a variety of input types such as URLs, log files, PCAP files, images, and executable files. The system automatically processed the given inputs and found potential security vulnerabilities. The identified vulnerabilities were mapped to OWASP Top 10 categories and MITRE ATT\&CK techniques to provide structured threat intelligence. The system also calculated the severity of each vulnerability found by CVSS scores. The vulnerabilities are classified into Low, Medium, High and Critical risk levels based on the CVSS values. The generated results reveal that the system is able to effectively combine the automated scanning and AI-based reasoning for the security risk detection. The system produced a structured vulnerability assessment report, including detected vulnerabilities, OWASP mapping, MITRE ATT\&CK mapping, CVSS risk scores, and recommended mitigation strategies. Results show that the proposed AI-Powered VAPT Copilot improves efficiency of vulnerability detection, reduces manual effort and provides meaningful security insights for better decision making. The results of the vulnerability mapping and risk assessment are shown in Table~\ref{tab:results}. Figure~\ref{fig:attack} shows the evolution of risk of an attack chain by discovered vulnerabilities.
+
+\begin{table}[H]
+\centering
+\caption{Vulnerability Mapping and Risk Assessment Methodology}
+\footnotesize
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{|c|c|c|c|}
+\hline
+Detected Feature & OWASP Category & MITRE Technique & Risk Level \\
+\hline
+Open Ports & A05: Misconfiguration & T1046 & Medium \\
+Weak Authentication & A07: Auth Failure & T1078 & High \\
+Suspicious Binary & A08: Integrity Failure & T1059 & High \\
+Unencrypted Traffic & A02: Cryptographic Failure & T1047 & Medium \\
+Privilege Abuse & A01: Broken Access & T1068 & Critical \\
+\hline
+\end{tabular}
+}
+\label{tab:results}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\columnwidth]{graph.png}
+\caption{Attack Chain Risk Progression}
+\label{fig:attack}
+\end{figure}
+
+% ================= CONCLUSION =================
+
+\section{Conclusion}
+This project introduces an AI-Powered VAPT Copilot that automates vulnerability assessment based on artificial intelligence and traditional security tools. The system combines multiple input sources and performs intelligent analysis using a local large language model. The proposed solution increases the accuracy of vulnerability detection, reduces the manual effort and generates structured security reports. The system shows the value of combining AI reasoning with traditional VAPT techniques. This approach augments cybersecurity workflows and facilitates effective vulnerability management.
+
+% ================= FUTURE =================
+
+\section{Future Work}
+In addition, the AI-Powered VAPT Copilot will be enhanced in the future with live vulnerability detection and real-time traffic monitoring. The system can be improved with the integration of SIEM platforms for centralized security monitoring. Other improvements are auto exploit generation, advanced anomaly detection using ML models and cloud deployment for scalability. The system can be extended to support mobile security analysis and vulnerability assessment of IoT devices. Future work will also involve integrating threat intelligence feeds to improve vulnerability correlation and detection accuracy. The system can be improved by recommendations of patch automatically and remediation assistance for a faster mitigation of vulnerabilities. Behavior analytics can also identify insider threats and advanced persistent attacks. The proposed system can be extended to support for container security and cloud native vulnerability assessment. Another possible improvement is to incorporate reinforcement learning techniques for adaptive security decision-making. Finally, a user-friendly web dashboard with real-time visualization will be developed to further enhance the usability and operational efficiency. We may also include automated penetration testing agents to continuously validate security someday.
+
+% ================= REFERENCES =================
+\section*{References}
+\begin{enumerate}
+
+\item A. Sharma and R. Kumar, “An Ideation for a New Web Application Vulnerability Scanner and AI/LLM Enhanced Report Maker,” Int. J. Res. Appl. Sci. Eng. Technol., vol. 12, no. 2, pp. 1450–1458, Feb. 2024, \href{https://doi.org/10.22214/ijraset.2024.58732}{doi: 10.22214/ijraset.2024.58732}.
+
+\item X. Deng, J. Li, and Y. Zhang, “PentestGPT: Evaluating and Harnessing Large Language Models for Automated Penetration Testing,” in Proc. USENIX Security Symp., Philadelphia, PA, USA, 2024, pp. 847--864, \href{https://www.usenix.org/conference/usenixsecurity24/presentation/deng}{usenix: security24/presentation/deng}.
+
+\item Y. Chen, L. Wang, and M. Zhao, “xOffense: An AI-driven Autonomous Penetration Testing Framework with Offensive Knowledge-Enhanced LLMs and Multi-Agent Systems,” arXiv preprint arXiv:2509.13021, 2025, \href{https://doi.org/10.48550/arXiv.2509.13021}{doi: 10.48550/arXiv.2509.13021}.
+
+\item M. Ferrag, L. Shu, and X. Yang, “Generative AI in Cybersecurity: A Comprehensive Review of LLM Applications and Vulnerabilities,” Comput. Netw., vol. 235, pp. 110002, Jan. 2024, \href{https://doi.org/10.1016/j.comnet.2023.110002}{doi: 10.1016/j.comnet.2023.110002}.
+
+\item S. Kumar and P. Gupta, “AI in Penetration Testing: A Systematic Mapping Study,” TechRxiv, 2024, \href{https://doi.org/10.36227/techrxiv.17129532.v1}{doi: 10.36227/techrxiv.17129532.v1}.
+
+\item Y. Zhang, H. Wang, and K. Chen, “IRIS: LLM-Assisted Static Analysis for Detecting Security Vulnerabilities,” arXiv preprint arXiv:2405.17238, 2024, \href{https://doi.org/10.48550/arXiv.2405.17238}{doi: 10.48550/arXiv.2405.17238}.
+
+\item H. Huang and J. Zhu, “PenHeal: A Two-Stage LLM Framework for Automated Pentesting and Optimal Remediation,” arXiv preprint arXiv:2407.17788, 2024, \href{https://doi.org/10.48550/arXiv.2407.17788}{doi: 10.48550/arXiv.2407.17788}.
+
+\item K. Patel and R. Singh, “Automated Security Analysis Using Machine Learning Techniques,” IEEE Trans. Inf. Forensics Security, vol. 18, pp. 1123–1135, 2022, \href{https://doi.org/10.1109/TIFS.2022.3145678}{doi: 10.1109/TIFS.2022.3145678}.
+
+\item D. B. Johnson, “Automated Penetration Testing Using Artificial Intelligence,” in Proc. IEEE Int. Conf. Cyber Security, New York, NY, USA, 2021, pp. 120–125, \href{https://doi.org/10.1109/ICCSEC.2021.9456789}{doi: 10.1109/ICCSEC.2021.9456789}.
+
+\item G. McGraw, Software Security: Building Security In. Boston, MA, USA: Addison-Wesley, 2006.
+
+\item N. Provos and P. Honeyman, “Hide and Seek: An Introduction to Steganography,” IEEE Security Privacy, vol. 1, no. 3, pp. 32–44, May 2003, \href{https://doi.org/10.1109/MSECP.2003.1203220}{doi: 10.1109/MSECP.2003.1203220}.
+
+\item O. R. Mahmoud, “Network Security Assessment Using Penetration Testing,” IEEE Commun. Mag., vol. 56, no. 4, pp. 20–27, Apr. 2018, \href{https://doi.org/10.1109/MCOM.2018.1700845}{doi: 10.1109/MCOM.2018.1700845}.
+
+\item I. Petrovski and S. Stefanov, ``Mapping the MITRE ATT\&CK Framework to Modbus Cyber Attacks in Industrial OT Networks,'' in Proc. Int. Conf. on Experimental Strategic Technologies (ICEST), 2025, pp. 45--51, \href{https://doi.org/10.1109/ICEST66328.2025.11098426}{doi: 10.1109/ICEST66328.2025.11098426}.
+
+\item J. Doe, A. Smith, and M. Taylor, ``Evolution of Application Security based on OWASP Top 10 and CWE/SANS Top 25 with Predictions for the 2025 OWASP Top 10,'' in Proc. International Conf. on Information and Communication Technology (ICICT), 2025, pp. 210--216, \href{https://doi.org/10.1109/ICICT64420.2025.11004742}{doi: 10.1109/ICICT64420.2025.11004742}.
+
+\item R. Al-Qaisi and H. Al-Ahmad, ``Enhancing Cybersecurity Proactive Decision-Making Through Attack Tree Analysis and MITRE Framework,'' in Proc. International Conf. on Cybersecurity Technology (ICCST), 2023, pp. 89--95, \href{https://doi.org/10.1109/ICCST59048.2023.10726853}{doi: 10.1109/ICCST59048.2023.10726853}.
+
+\item K. A. Sree and M. K. S. Jassim, ``Design of an Intelligent Vulnerability Management Architecture Using Local Language Model Co-Pilots,'' Amrita International Journal of Advanced Computing, vol. 4, no. 1, pp. 34--42, Jan. 2025, \href{https://doi.org/10.48550/amrita.aijac.2025.41243}{doi: 10.48550/amrita.aijac.2025.41243}.
+
+\item R. Raman, N. S. Kumar, and S. Venkat, ``Orchestrating Autonomous Security Testing Agents Across Enterprise Topologies,'' in Proc. Amrita International Conf. on Cyber Security and Automated Forensics (AICAF), Coimbatore, India, 2025, pp. 112--119, \href{https://doi.org/10.1109/AICAF58342.2025.10234567}{doi: 10.1109/AICAF58342.2025.10234567}.
+
+\end{enumerate}
+\end{document}

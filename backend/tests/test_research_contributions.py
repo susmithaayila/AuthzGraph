@@ -26,3 +26,11 @@ def test_attack_graph_generation():
     set_security_mode("secure")
     g_sec = generate_attack_graph()
     assert "PIPELINE DEFENSE ACTIVE" in g_sec["attack_chain_status"]
+
+def test_exact_binomial_ci():
+    from experiments.report_generator import exact_binomial_ci
+    ci_full = exact_binomial_ci(40, 40)
+    ci_zero = exact_binomial_ci(0, 40)
+    assert ci_full[0] >= 91.0 and ci_full[1] == 100.0
+    assert ci_zero[0] == 0.0 and ci_zero[1] <= 9.0
+

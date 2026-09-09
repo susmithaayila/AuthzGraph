@@ -75,8 +75,11 @@ Metrics evaluated:
 - **Latency Overhead (ms)**: Difference in execution time between baseline and full secure pipeline.
 - **False Positive Rate (%)**: Percentage of legitimate user requests incorrectly denied.
 
-*Methodological Note on Deterministic Trials & Confidence Intervals:*
-Because authorization policy evaluation under a fixed engine configuration is inherently deterministic, multi-trial executions ($N=40$ per vector, $N=20$ per ablation config) yield degenerate 95% confidence intervals (e.g., $[100.0\%, 100.0\%]$). Trials were repeated per vector to empirically confirm the complete absence of non-deterministic flakiness, race conditions, or session state pollution under high-frequency repeated invocation, rather than to estimate variance in an inherently stochastic process.
+*Methodological Note on Multi-Sample Benchmark vs Controlled Ablation:*
+The evaluation suite comprises two distinct experimental methodologies:
+1. **Randomized Multi-Sample HTTP Benchmark (Section 6.1)**: Draws randomized target resource IDs, injected properties, regional/departmental manager pairs, clearance levels, and endpoints per trial across $N=40$ trials per vector. Computes exact Clopper-Pearson 95% binomial confidence intervals, median and interquartile range (IQR) latencies, and paired Wilcoxon signed-rank significance testing (`scipy.stats.wilcoxon`) comparing server-side policy evaluation overhead.
+2. **Controlled Layer-Ablation Fault-Injection Sweep (Section 6.2)**: A controlled fault-injection / mutation-testing experiment on a deterministic rule-based policy engine. One canonical adversarial request is deliberately constructed per authorization layer, and individual enforcement stages are selectively disabled to confirm the request's outcome flips deterministically. A clean 100%/0% diagonal matrix is the expected and correct result of this controlled mutation experiment, empirically proving complete 1:1 layer attribution without shadow-masking.
+
 
 ---
 

@@ -1,0 +1,971 @@
+{
+  "title": "AuthzGraph Empirical Research Benchmark Summary",
+  "timestamp": "20260909T055939Z",
+  "random_seed": 576793,
+  "trials_per_vector": 40,
+  "modes": {
+    "vulnerable": {
+      "vectors": {
+        "BOLA_SINGLE_OBJECT": {
+          "exposure_rate_pct": 100.0,
+          "binomial_ci_95": [
+            91.2,
+            100.0
+          ],
+          "trials": 40,
+          "exposures": 40,
+          "latency_e2e": {
+            "mean": 1.597,
+            "std": 0.346,
+            "median": 1.493,
+            "p50": 1.493,
+            "p25": 1.372,
+            "p75": 1.9,
+            "iqr": 0.528,
+            "p90": 2.11,
+            "p99": 2.512,
+            "ci_95_low": 1.489,
+            "ci_95_high": 1.704
+          },
+          "latency_server": {
+            "mean": 0.017,
+            "std": 0.004,
+            "median": 0.016,
+            "p50": 0.016,
+            "p25": 0.013,
+            "p75": 0.019,
+            "iqr": 0.006,
+            "p90": 0.025,
+            "p99": 0.029,
+            "ci_95_low": 0.016,
+            "ci_95_high": 0.018
+          },
+          "mean": 1.597,
+          "std": 0.346,
+          "median": 1.493,
+          "iqr": 0.528,
+          "p50": 1.493,
+          "p90": 2.11,
+          "p99": 2.512,
+          "ci_95_low": 1.489,
+          "ci_95_high": 1.704
+        },
+        "BOLA_ENUMERATION": {
+          "exposure_rate_pct": 100.0,
+          "binomial_ci_95": [
+            91.2,
+            100.0
+          ],
+          "trials": 40,
+          "exposures": 40,
+          "latency_e2e": {
+            "mean": 1.566,
+            "std": 0.378,
+            "median": 1.469,
+            "p50": 1.469,
+            "p25": 1.346,
+            "p75": 1.62,
+            "iqr": 0.274,
+            "p90": 2.252,
+            "p99": 2.489,
+            "ci_95_low": 1.449,
+            "ci_95_high": 1.683
+          },
+          "latency_server": {
+            "mean": 0.017,
+            "std": 0.004,
+            "median": 0.016,
+            "p50": 0.016,
+            "p25": 0.015,
+            "p75": 0.019,
+            "iqr": 0.004,
+            "p90": 0.023,
+            "p99": 0.029,
+            "ci_95_low": 0.016,
+            "ci_95_high": 0.018
+          },
+          "mean": 1.566,
+          "std": 0.378,
+          "median": 1.469,
+          "iqr": 0.274,
+          "p50": 1.469,
+          "p90": 2.252,
+          "p99": 2.489,
+          "ci_95_low": 1.449,
+          "ci_95_high": 1.683
+        },
+        "BOPLA_MASS_ASSIGNMENT": {
+          "exposure_rate_pct": 100.0,
+          "binomial_ci_95": [
+            91.2,
+            100.0
+          ],
+          "trials": 40,
+          "exposures": 40,
+          "latency_e2e": {
+            "mean": 1.953,
+            "std": 0.567,
+            "median": 1.833,
+            "p50": 1.833,
+            "p25": 1.46,
+            "p75": 2.45,
+            "iqr": 0.99,
+            "p90": 2.904,
+            "p99": 3.225,
+            "ci_95_low": 1.778,
+            "ci_95_high": 2.129
+          },
+          "latency_server": {
+            "mean": 0.017,
+            "std": 0.006,
+            "median": 0.015,
+            "p50": 0.015,
+            "p25": 0.013,
+            "p75": 0.02,
+            "iqr": 0.007,
+            "p90": 0.025,
+            "p99": 0.033,
+            "ci_95_low": 0.016,
+            "ci_95_high": 0.019
+          },
+          "mean": 1.953,
+          "std": 0.567,
+          "median": 1.833,
+          "iqr": 0.99,
+          "p50": 1.833,
+          "p90": 2.904,
+          "p99": 3.225,
+          "ci_95_low": 1.778,
+          "ci_95_high": 2.129
+        },
+        "BFLA_ADMIN_PROBING": {
+          "exposure_rate_pct": 100.0,
+          "binomial_ci_95": [
+            91.2,
+            100.0
+          ],
+          "trials": 40,
+          "exposures": 40,
+          "latency_e2e": {
+            "mean": 1.582,
+            "std": 0.396,
+            "median": 1.538,
+            "p50": 1.538,
+            "p25": 1.33,
+            "p75": 1.751,
+            "iqr": 0.421,
+            "p90": 2.228,
+            "p99": 2.972,
+            "ci_95_low": 1.459,
+            "ci_95_high": 1.705
+          },
+          "latency_server": {
+            "mean": 0.016,
+            "std": 0.004,
+            "median": 0.016,
+            "p50": 0.016,
+            "p25": 0.014,
+            "p75": 0.018,
+            "iqr": 0.004,
+            "p90": 0.02,
+            "p99": 0.035,
+            "ci_95_low": 0.015,
+            "ci_95_high": 0.018
+          },
+          "mean": 1.582,
+          "std": 0.396,
+          "median": 1.538,
+          "iqr": 0.421,
+          "p50": 1.538,
+          "p90": 2.228,
+          "p99": 2.972,
+          "ci_95_low": 1.459,
+          "ci_95_high": 1.705
+        },
+        "BFLA_VERB_SWITCHING": {
+          "exposure_rate_pct": 100.0,
+          "binomial_ci_95": [
+            91.2,
+            100.0
+          ],
+          "trials": 40,
+          "exposures": 40,
+          "latency_e2e": {
+            "mean": 1.897,
+            "std": 0.568,
+            "median": 1.887,
+            "p50": 1.887,
+            "p25": 1.356,
+            "p75": 2.154,
+            "iqr": 0.798,
+            "p90": 2.759,
+            "p99": 3.629,
+            "ci_95_low": 1.721,
+            "ci_95_high": 2.073
+          },
+          "latency_server": {
+            "mean": 0.021,
+            "std": 0.006,
+            "median": 0.02,
+            "p50": 0.02,
+            "p25": 0.017,
+            "p75": 0.022,
+            "iqr": 0.005,
+            "p90": 0.029,
+            "p99": 0.046,
+            "ci_95_low": 0.019,
+            "ci_95_high": 0.023
+          },
+          "mean": 1.897,
+          "std": 0.568,
+          "median": 1.887,
+          "iqr": 0.798,
+          "p50": 1.887,
+          "p90": 2.759,
+          "p99": 3.629,
+          "ci_95_low": 1.721,
+          "ci_95_high": 2.073
+        },
+        "ABAC_CROSS_REGION": {
+          "exposure_rate_pct": 100.0,
+          "binomial_ci_95": [
+            91.2,
+            100.0
+          ],
+          "trials": 40,
+          "exposures": 40,
+          "latency_e2e": {
+            "mean": 1.605,
+            "std": 0.432,
+            "median": 1.494,
+            "p50": 1.494,
+            "p25": 1.27,
+            "p75": 1.89,
+            "iqr": 0.62,
+            "p90": 2.287,
+            "p99": 2.749,
+            "ci_95_low": 1.471,
+            "ci_95_high": 1.739
+          },
+          "latency_server": {
+            "mean": 0.018,
+            "std": 0.005,
+            "median": 0.016,
+            "p50": 0.016,
+            "p25": 0.014,
+            "p75": 0.02,
+            "iqr": 0.006,
+            "p90": 0.028,
+            "p99": 0.033,
+            "ci_95_low": 0.016,
+            "ci_95_high": 0.019
+          },
+          "mean": 1.605,
+          "std": 0.432,
+          "median": 1.494,
+          "iqr": 0.62,
+          "p50": 1.494,
+          "p90": 2.287,
+          "p99": 2.749,
+          "ci_95_low": 1.471,
+          "ci_95_high": 1.739
+        },
+        "ABAC_CROSS_DEPARTMENT": {
+          "exposure_rate_pct": 100.0,
+          "binomial_ci_95": [
+            91.2,
+            100.0
+          ],
+          "trials": 40,
+          "exposures": 40,
+          "latency_e2e": {
+            "mean": 1.856,
+            "std": 0.639,
+            "median": 1.826,
+            "p50": 1.826,
+            "p25": 1.353,
+            "p75": 2.191,
+            "iqr": 0.838,
+            "p90": 2.576,
+            "p99": 3.912,
+            "ci_95_low": 1.658,
+            "ci_95_high": 2.054
+          },
+          "latency_server": {
+            "mean": 0.021,
+            "std": 0.01,
+            "median": 0.019,
+            "p50": 0.019,
+            "p25": 0.015,
+            "p75": 0.022,
+            "iqr": 0.007,
+            "p90": 0.032,
+            "p99": 0.053,
+            "ci_95_low": 0.018,
+            "ci_95_high": 0.024
+          },
+          "mean": 1.856,
+          "std": 0.639,
+          "median": 1.826,
+          "iqr": 0.838,
+          "p50": 1.826,
+          "p90": 2.576,
+          "p99": 3.912,
+          "ci_95_low": 1.658,
+          "ci_95_high": 2.054
+        },
+        "MAC_READ_UP_VIOLATION": {
+          "exposure_rate_pct": 100.0,
+          "binomial_ci_95": [
+            91.2,
+            100.0
+          ],
+          "trials": 40,
+          "exposures": 40,
+          "latency_e2e": {
+            "mean": 1.474,
+            "std": 0.435,
+            "median": 1.352,
+            "p50": 1.352,
+            "p25": 1.141,
+            "p75": 1.651,
+            "iqr": 0.51,
+            "p90": 2.237,
+            "p99": 3.042,
+            "ci_95_low": 1.34,
+            "ci_95_high": 1.609
+          },
+          "latency_server": {
+            "mean": 0.016,
+            "std": 0.005,
+            "median": 0.014,
+            "p50": 0.014,
+            "p25": 0.012,
+            "p75": 0.019,
+            "iqr": 0.007,
+            "p90": 0.024,
+            "p99": 0.033,
+            "ci_95_low": 0.014,
+            "ci_95_high": 0.018
+          },
+          "mean": 1.474,
+          "std": 0.435,
+          "median": 1.352,
+          "iqr": 0.51,
+          "p50": 1.352,
+          "p90": 2.237,
+          "p99": 3.042,
+          "ci_95_low": 1.34,
+          "ci_95_high": 1.609
+        },
+        "MAC_WRITE_DOWN_VIOLATION": {
+          "exposure_rate_pct": 100.0,
+          "binomial_ci_95": [
+            91.2,
+            100.0
+          ],
+          "trials": 40,
+          "exposures": 40,
+          "latency_e2e": {
+            "mean": 1.664,
+            "std": 0.337,
+            "median": 1.549,
+            "p50": 1.549,
+            "p25": 1.419,
+            "p75": 1.891,
+            "iqr": 0.472,
+            "p90": 2.253,
+            "p99": 2.552,
+            "ci_95_low": 1.56,
+            "ci_95_high": 1.769
+          },
+          "latency_server": {
+            "mean": 0.015,
+            "std": 0.003,
+            "median": 0.014,
+            "p50": 0.014,
+            "p25": 0.013,
+            "p75": 0.017,
+            "iqr": 0.004,
+            "p90": 0.02,
+            "p99": 0.028,
+            "ci_95_low": 0.014,
+            "ci_95_high": 0.016
+          },
+          "mean": 1.664,
+          "std": 0.337,
+          "median": 1.549,
+          "iqr": 0.472,
+          "p50": 1.549,
+          "p90": 2.253,
+          "p99": 2.552,
+          "ci_95_low": 1.56,
+          "ci_95_high": 1.769
+        },
+        "RBAC_PERMISSION_DENIED": {
+          "exposure_rate_pct": 100.0,
+          "binomial_ci_95": [
+            91.2,
+            100.0
+          ],
+          "trials": 40,
+          "exposures": 40,
+          "latency_e2e": {
+            "mean": 1.362,
+            "std": 0.268,
+            "median": 1.311,
+            "p50": 1.311,
+            "p25": 1.145,
+            "p75": 1.514,
+            "iqr": 0.369,
+            "p90": 1.809,
+            "p99": 2.004,
+            "ci_95_low": 1.279,
+            "ci_95_high": 1.445
+          },
+          "latency_server": {
+            "mean": 0.015,
+            "std": 0.002,
+            "median": 0.014,
+            "p50": 0.014,
+            "p25": 0.013,
+            "p75": 0.016,
+            "iqr": 0.003,
+            "p90": 0.02,
+            "p99": 0.021,
+            "ci_95_low": 0.014,
+            "ci_95_high": 0.015
+          },
+          "mean": 1.362,
+          "std": 0.268,
+          "median": 1.311,
+          "iqr": 0.369,
+          "p50": 1.311,
+          "p90": 1.809,
+          "p99": 2.004,
+          "ci_95_low": 1.279,
+          "ci_95_high": 1.445
+        }
+      },
+      "control_legitimate": {
+        "mean": 1.48,
+        "std": 0.454,
+        "median": 1.26,
+        "p50": 1.26,
+        "p25": 1.19,
+        "p75": 1.799,
+        "iqr": 0.609,
+        "p90": 2.251,
+        "p99": 2.657,
+        "ci_95_low": 1.339,
+        "ci_95_high": 1.621,
+        "false_positive_rate_pct": 0.0,
+        "binomial_ci_95": [
+          0.0,
+          8.8
+        ],
+        "denials": 0,
+        "trials": 40
+      },
+      "overall_exposure_rate_pct": 100.0,
+      "overall_binomial_ci_95": [
+        99.1,
+        100.0
+      ]
+    },
+    "secure": {
+      "vectors": {
+        "BOLA_SINGLE_OBJECT": {
+          "exposure_rate_pct": 0.0,
+          "binomial_ci_95": [
+            0.0,
+            8.8
+          ],
+          "trials": 40,
+          "exposures": 0,
+          "latency_e2e": {
+            "mean": 1.388,
+            "std": 0.23,
+            "median": 1.347,
+            "p50": 1.347,
+            "p25": 1.242,
+            "p75": 1.482,
+            "iqr": 0.24,
+            "p90": 1.642,
+            "p99": 2.316,
+            "ci_95_low": 1.317,
+            "ci_95_high": 1.46
+          },
+          "latency_server": {
+            "mean": 0.018,
+            "std": 0.003,
+            "median": 0.017,
+            "p50": 0.017,
+            "p25": 0.016,
+            "p75": 0.02,
+            "iqr": 0.004,
+            "p90": 0.023,
+            "p99": 0.03,
+            "ci_95_low": 0.017,
+            "ci_95_high": 0.019
+          },
+          "mean": 1.388,
+          "std": 0.23,
+          "median": 1.347,
+          "iqr": 0.24,
+          "p50": 1.347,
+          "p90": 1.642,
+          "p99": 2.316,
+          "ci_95_low": 1.317,
+          "ci_95_high": 1.46
+        },
+        "BOLA_ENUMERATION": {
+          "exposure_rate_pct": 0.0,
+          "binomial_ci_95": [
+            0.0,
+            8.8
+          ],
+          "trials": 40,
+          "exposures": 0,
+          "latency_e2e": {
+            "mean": 1.333,
+            "std": 0.273,
+            "median": 1.263,
+            "p50": 1.263,
+            "p25": 1.171,
+            "p75": 1.446,
+            "iqr": 0.275,
+            "p90": 1.768,
+            "p99": 2.161,
+            "ci_95_low": 1.248,
+            "ci_95_high": 1.417
+          },
+          "latency_server": {
+            "mean": 0.021,
+            "std": 0.005,
+            "median": 0.02,
+            "p50": 0.02,
+            "p25": 0.016,
+            "p75": 0.024,
+            "iqr": 0.008,
+            "p90": 0.028,
+            "p99": 0.038,
+            "ci_95_low": 0.019,
+            "ci_95_high": 0.022
+          },
+          "mean": 1.333,
+          "std": 0.273,
+          "median": 1.263,
+          "iqr": 0.275,
+          "p50": 1.263,
+          "p90": 1.768,
+          "p99": 2.161,
+          "ci_95_low": 1.248,
+          "ci_95_high": 1.417
+        },
+        "BOPLA_MASS_ASSIGNMENT": {
+          "exposure_rate_pct": 0.0,
+          "binomial_ci_95": [
+            0.0,
+            8.8
+          ],
+          "trials": 40,
+          "exposures": 0,
+          "latency_e2e": {
+            "mean": 1.726,
+            "std": 0.387,
+            "median": 1.6,
+            "p50": 1.6,
+            "p25": 1.444,
+            "p75": 1.933,
+            "iqr": 0.489,
+            "p90": 2.53,
+            "p99": 2.842,
+            "ci_95_low": 1.606,
+            "ci_95_high": 1.846
+          },
+          "latency_server": {
+            "mean": 0.025,
+            "std": 0.007,
+            "median": 0.022,
+            "p50": 0.022,
+            "p25": 0.021,
+            "p75": 0.025,
+            "iqr": 0.004,
+            "p90": 0.034,
+            "p99": 0.053,
+            "ci_95_low": 0.023,
+            "ci_95_high": 0.027
+          },
+          "mean": 1.726,
+          "std": 0.387,
+          "median": 1.6,
+          "iqr": 0.489,
+          "p50": 1.6,
+          "p90": 2.53,
+          "p99": 2.842,
+          "ci_95_low": 1.606,
+          "ci_95_high": 1.846
+        },
+        "BFLA_ADMIN_PROBING": {
+          "exposure_rate_pct": 0.0,
+          "binomial_ci_95": [
+            0.0,
+            8.8
+          ],
+          "trials": 40,
+          "exposures": 0,
+          "latency_e2e": {
+            "mean": 1.517,
+            "std": 0.774,
+            "median": 1.342,
+            "p50": 1.342,
+            "p25": 1.232,
+            "p75": 1.462,
+            "iqr": 0.23,
+            "p90": 1.96,
+            "p99": 5.808,
+            "ci_95_low": 1.277,
+            "ci_95_high": 1.757
+          },
+          "latency_server": {
+            "mean": 0.022,
+            "std": 0.005,
+            "median": 0.021,
+            "p50": 0.021,
+            "p25": 0.019,
+            "p75": 0.023,
+            "iqr": 0.004,
+            "p90": 0.029,
+            "p99": 0.039,
+            "ci_95_low": 0.02,
+            "ci_95_high": 0.023
+          },
+          "mean": 1.517,
+          "std": 0.774,
+          "median": 1.342,
+          "iqr": 0.23,
+          "p50": 1.342,
+          "p90": 1.96,
+          "p99": 5.808,
+          "ci_95_low": 1.277,
+          "ci_95_high": 1.757
+        },
+        "BFLA_VERB_SWITCHING": {
+          "exposure_rate_pct": 0.0,
+          "binomial_ci_95": [
+            0.0,
+            8.8
+          ],
+          "trials": 40,
+          "exposures": 0,
+          "latency_e2e": {
+            "mean": 1.484,
+            "std": 0.321,
+            "median": 1.402,
+            "p50": 1.402,
+            "p25": 1.266,
+            "p75": 1.619,
+            "iqr": 0.353,
+            "p90": 1.954,
+            "p99": 2.613,
+            "ci_95_low": 1.385,
+            "ci_95_high": 1.583
+          },
+          "latency_server": {
+            "mean": 0.024,
+            "std": 0.012,
+            "median": 0.021,
+            "p50": 0.021,
+            "p25": 0.02,
+            "p75": 0.024,
+            "iqr": 0.004,
+            "p90": 0.032,
+            "p99": 0.097,
+            "ci_95_low": 0.021,
+            "ci_95_high": 0.028
+          },
+          "mean": 1.484,
+          "std": 0.321,
+          "median": 1.402,
+          "iqr": 0.353,
+          "p50": 1.402,
+          "p90": 1.954,
+          "p99": 2.613,
+          "ci_95_low": 1.385,
+          "ci_95_high": 1.583
+        },
+        "ABAC_CROSS_REGION": {
+          "exposure_rate_pct": 0.0,
+          "binomial_ci_95": [
+            0.0,
+            8.8
+          ],
+          "trials": 40,
+          "exposures": 0,
+          "latency_e2e": {
+            "mean": 1.316,
+            "std": 0.266,
+            "median": 1.265,
+            "p50": 1.265,
+            "p25": 1.144,
+            "p75": 1.372,
+            "iqr": 0.228,
+            "p90": 1.73,
+            "p99": 2.362,
+            "ci_95_low": 1.233,
+            "ci_95_high": 1.398
+          },
+          "latency_server": {
+            "mean": 0.024,
+            "std": 0.005,
+            "median": 0.022,
+            "p50": 0.022,
+            "p25": 0.021,
+            "p75": 0.025,
+            "iqr": 0.004,
+            "p90": 0.03,
+            "p99": 0.049,
+            "ci_95_low": 0.022,
+            "ci_95_high": 0.025
+          },
+          "mean": 1.316,
+          "std": 0.266,
+          "median": 1.265,
+          "iqr": 0.228,
+          "p50": 1.265,
+          "p90": 1.73,
+          "p99": 2.362,
+          "ci_95_low": 1.233,
+          "ci_95_high": 1.398
+        },
+        "ABAC_CROSS_DEPARTMENT": {
+          "exposure_rate_pct": 0.0,
+          "binomial_ci_95": [
+            0.0,
+            8.8
+          ],
+          "trials": 40,
+          "exposures": 0,
+          "latency_e2e": {
+            "mean": 1.404,
+            "std": 0.281,
+            "median": 1.33,
+            "p50": 1.33,
+            "p25": 1.204,
+            "p75": 1.457,
+            "iqr": 0.253,
+            "p90": 1.89,
+            "p99": 2.462,
+            "ci_95_low": 1.317,
+            "ci_95_high": 1.491
+          },
+          "latency_server": {
+            "mean": 0.024,
+            "std": 0.007,
+            "median": 0.023,
+            "p50": 0.023,
+            "p25": 0.02,
+            "p75": 0.025,
+            "iqr": 0.005,
+            "p90": 0.033,
+            "p99": 0.048,
+            "ci_95_low": 0.022,
+            "ci_95_high": 0.026
+          },
+          "mean": 1.404,
+          "std": 0.281,
+          "median": 1.33,
+          "iqr": 0.253,
+          "p50": 1.33,
+          "p90": 1.89,
+          "p99": 2.462,
+          "ci_95_low": 1.317,
+          "ci_95_high": 1.491
+        },
+        "MAC_READ_UP_VIOLATION": {
+          "exposure_rate_pct": 0.0,
+          "binomial_ci_95": [
+            0.0,
+            8.8
+          ],
+          "trials": 40,
+          "exposures": 0,
+          "latency_e2e": {
+            "mean": 1.431,
+            "std": 0.284,
+            "median": 1.325,
+            "p50": 1.325,
+            "p25": 1.217,
+            "p75": 1.658,
+            "iqr": 0.441,
+            "p90": 1.996,
+            "p99": 2.074,
+            "ci_95_low": 1.343,
+            "ci_95_high": 1.519
+          },
+          "latency_server": {
+            "mean": 0.025,
+            "std": 0.004,
+            "median": 0.023,
+            "p50": 0.023,
+            "p25": 0.021,
+            "p75": 0.029,
+            "iqr": 0.008,
+            "p90": 0.031,
+            "p99": 0.035,
+            "ci_95_low": 0.023,
+            "ci_95_high": 0.026
+          },
+          "mean": 1.431,
+          "std": 0.284,
+          "median": 1.325,
+          "iqr": 0.441,
+          "p50": 1.325,
+          "p90": 1.996,
+          "p99": 2.074,
+          "ci_95_low": 1.343,
+          "ci_95_high": 1.519
+        },
+        "MAC_WRITE_DOWN_VIOLATION": {
+          "exposure_rate_pct": 0.0,
+          "binomial_ci_95": [
+            0.0,
+            8.8
+          ],
+          "trials": 40,
+          "exposures": 0,
+          "latency_e2e": {
+            "mean": 1.731,
+            "std": 0.472,
+            "median": 1.6,
+            "p50": 1.6,
+            "p25": 1.442,
+            "p75": 1.766,
+            "iqr": 0.324,
+            "p90": 2.747,
+            "p99": 3.223,
+            "ci_95_low": 1.585,
+            "ci_95_high": 1.878
+          },
+          "latency_server": {
+            "mean": 0.028,
+            "std": 0.014,
+            "median": 0.023,
+            "p50": 0.023,
+            "p25": 0.022,
+            "p75": 0.027,
+            "iqr": 0.005,
+            "p90": 0.039,
+            "p99": 0.104,
+            "ci_95_low": 0.023,
+            "ci_95_high": 0.032
+          },
+          "mean": 1.731,
+          "std": 0.472,
+          "median": 1.6,
+          "iqr": 0.324,
+          "p50": 1.6,
+          "p90": 2.747,
+          "p99": 3.223,
+          "ci_95_low": 1.585,
+          "ci_95_high": 1.878
+        },
+        "RBAC_PERMISSION_DENIED": {
+          "exposure_rate_pct": 0.0,
+          "binomial_ci_95": [
+            0.0,
+            8.8
+          ],
+          "trials": 40,
+          "exposures": 0,
+          "latency_e2e": {
+            "mean": 1.398,
+            "std": 0.344,
+            "median": 1.273,
+            "p50": 1.273,
+            "p25": 1.193,
+            "p75": 1.423,
+            "iqr": 0.23,
+            "p90": 1.938,
+            "p99": 2.587,
+            "ci_95_low": 1.291,
+            "ci_95_high": 1.505
+          },
+          "latency_server": {
+            "mean": 0.024,
+            "std": 0.011,
+            "median": 0.021,
+            "p50": 0.021,
+            "p25": 0.019,
+            "p75": 0.024,
+            "iqr": 0.005,
+            "p90": 0.034,
+            "p99": 0.077,
+            "ci_95_low": 0.021,
+            "ci_95_high": 0.028
+          },
+          "mean": 1.398,
+          "std": 0.344,
+          "median": 1.273,
+          "iqr": 0.23,
+          "p50": 1.273,
+          "p90": 1.938,
+          "p99": 2.587,
+          "ci_95_low": 1.291,
+          "ci_95_high": 1.505
+        }
+      },
+      "control_legitimate": {
+        "mean": 1.39,
+        "std": 0.278,
+        "median": 1.361,
+        "p50": 1.361,
+        "p25": 1.196,
+        "p75": 1.507,
+        "iqr": 0.311,
+        "p90": 1.653,
+        "p99": 2.55,
+        "ci_95_low": 1.304,
+        "ci_95_high": 1.476,
+        "false_positive_rate_pct": 0.0,
+        "binomial_ci_95": [
+          0.0,
+          8.8
+        ],
+        "denials": 0,
+        "trials": 40
+      },
+      "overall_exposure_rate_pct": 0.0,
+      "overall_binomial_ci_95": [
+        0.0,
+        0.9
+      ]
+    }
+  },
+  "statistical_tests": {
+    "wilcoxon_latency_paired_test": {
+      "p_value": 0.0,
+      "statistically_significant": true,
+      "median_diff_ms": 0.006
+    }
+  },
+  "executive_summary": {
+    "vulnerable_mode_exposure_pct": 100.0,
+    "vulnerable_mode_binomial_ci_95": [
+      99.1,
+      100.0
+    ],
+    "secure_mode_exposure_pct": 0.0,
+    "secure_mode_binomial_ci_95": [
+      0.0,
+      0.9
+    ],
+    "exposure_reduction_pct": 100.0,
+    "mean_latency_vulnerable_ms": 1.656,
+    "mean_latency_secure_ms": 1.473,
+    "latency_overhead_ms": -0.183,
+    "wilcoxon_p_value": 0.0,
+    "false_positive_rate_secure_pct": 0.0
+  }
+}

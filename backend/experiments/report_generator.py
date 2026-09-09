@@ -10,6 +10,18 @@ import json
 import os
 import sys
 from datetime import datetime, timezone
+from scipy.stats import beta
+
+
+def exact_binomial_ci(successes: int, n: int, confidence: float = 0.95) -> tuple[float, float]:
+    """Clopper-Pearson exact binomial CI. Returns (low, high) as fractions in [0,100]."""
+    if n == 0:
+        return (0.0, 0.0)
+    alpha = 1 - confidence
+    lo = 0.0 if successes == 0 else beta.ppf(alpha / 2, successes, n - successes + 1)
+    hi = 1.0 if successes == n else beta.ppf(1 - alpha / 2, successes + 1, n - successes)
+    return (round(lo * 100, 1), round(hi * 100, 1))
+
 
 
 RESULTS_DIR = os.path.join("experiments", "results")

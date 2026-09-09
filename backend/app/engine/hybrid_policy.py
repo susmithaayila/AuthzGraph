@@ -2,7 +2,8 @@ import time
 from typing import Dict, List, Any
 from app.engine.object_graph import UserIdentity, ResourceObject
 
-CLEARANCE_LEVELS = {"PUBLIC": 0, "INTERNAL": 1, "CONFIDENTIAL": 2, "RESTRICTED": 3}
+CLEARANCE_LEVELS = {"PUBLIC": 1, "INTERNAL": 2, "CONFIDENTIAL": 3, "SECRET": 4}
+
 
 class HybridPolicyEvaluator:
     """

@@ -133,7 +133,8 @@ class APIParser:
     def _infer_sensitivity(path: str, summary: str, description: str) -> str:
         text = f"{path} {summary} {description}".lower()
         if any(w in text for w in ["admin", "secret", "private", "credit", "ssn", "password", "token"]):
-            return "RESTRICTED"
+            return "SECRET"
+
         elif any(w in text for w in ["user", "account", "profile", "billing", "location"]):
             return "CONFIDENTIAL"
         elif any(w in text for w in ["public", "health", "ping", "info", "version"]):

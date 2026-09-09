@@ -9,7 +9,8 @@ class UserIdentity(BaseModel):
     role: str = "USER_REGULAR"
     role_level: int = 1
     attributes: Dict[str, Any] = Field(default_factory=dict)
-    clearance: str = "INTERNAL"  # PUBLIC, INTERNAL, CONFIDENTIAL, RESTRICTED
+    clearance: str = "INTERNAL"  # PUBLIC, INTERNAL, CONFIDENTIAL, SECRET
+
 
 class ResourceObject(BaseModel):
     object_id: str

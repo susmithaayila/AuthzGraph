@@ -22,17 +22,18 @@ def test_openapi_parser():
     assert len(endpoints) == 1
     assert endpoints[0].method == "GET"
     assert "vehicle_id" in endpoints[0].path_param_names
-    assert endpoints[0].sensitivity_label in ["CONFIDENTIAL", "RESTRICTED", "INTERNAL"]
+    assert endpoints[0].sensitivity_label in ["CONFIDENTIAL", "SECRET", "INTERNAL"]
 
 def test_hybrid_policy_evaluation():
     user = UserIdentity(user_id="u1", username="alice", token="tok", role_level=1, clearance="CONFIDENTIAL", attributes={"user_id": "u1"})
     res_owned = ResourceObject(object_id="r1", resource_type="doc", owner_user_id="u1", classification="CONFIDENTIAL")
-    res_other = ResourceObject(object_id="r2", resource_type="doc", owner_user_id="u2", classification="RESTRICTED")
+    res_other = ResourceObject(object_id="r2", resource_type="doc", owner_user_id="u2", classification="SECRET")
 
     # Owned resource (ABAC allows owner match) -> True
     assert HybridPolicyEvaluator.evaluate(user, "READ", res_owned, required_role_level=1) == True
-    # Restricted resource above user clearance -> MAC blocks -> False
+    # Secret resource above user clearance -> MAC blocks -> False
     assert HybridPolicyEvaluator.evaluate(user, "READ", res_other, required_role_level=1) == False
+
 
 def test_scale_benchmark():
     result = HybridPolicyEvaluator.run_scale_benchmark(100)

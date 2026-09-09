@@ -28,6 +28,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.middleware("http")
+async def add_engine_latency_header(request, call_next):
+    import time
+    from app.engine.authz_engine import CentralAuthorizationEngine
+    t0 = time.perf_counter()
+    response = await call_next(request)
+    t1 = time.perf_counter()
+    duration_ms = (t1 - t0) * 1000.0
+    engine_ms = getattr(CentralAuthorizationEngine, "last_evaluation_latency_ms", duration_ms)
+    response.headers["X-AuthzEngine-Latency-Ms"] = f"{engine_ms:.3f}"
+    return response
+
+
 app.include_router(api_router, prefix="/api/v1", dependencies=[Depends(bearer_scheme)])
 
 @app.get("/")

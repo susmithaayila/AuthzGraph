@@ -116,7 +116,7 @@ def seed_demo_graph():
                           role_level=1, clearance="INTERNAL")
     user_c = UserIdentity(user_id="user_admin", username="Operations Admin",
                           token="token_admin", role="ADMIN",
-                          role_level=3, clearance="RESTRICTED")
+                          role_level=3, clearance="SECRET")
     CURRENT_GRAPH.add_user(user_a)
     CURRENT_GRAPH.add_user(user_b)
     CURRENT_GRAPH.add_user(user_c)
@@ -127,7 +127,8 @@ def seed_demo_graph():
     CURRENT_GRAPH.add_resource(ResourceObject(object_id="rider_arjun_trips", resource_type="RiderGPSTrips",
                                                owner_user_id="rider_arjun", classification="CONFIDENTIAL"))
     CURRENT_GRAPH.add_resource(ResourceObject(object_id="rider_arjun_cards", resource_type="SavedPaymentCards",
-                                               owner_user_id="rider_arjun", classification="RESTRICTED"))
+                                               owner_user_id="rider_arjun", classification="SECRET"))
+
     CURRENT_GRAPH.add_resource(ResourceObject(object_id="veh_101", resource_type="VehicleLocation",
                                                owner_user_id="rider_arjun", classification="CONFIDENTIAL"))
 
@@ -1140,7 +1141,83 @@ async def bank_admin_delete_user(user_id: int, authorization: Optional[str] = He
     return {"status": "200 OK", "message": f"Synthetic user {user_id} deleted (demo simulation)"}
 
 
+@router.put("/bank/admin/users/{user_id}")
+async def bank_admin_update_user_role(user_id: int, authorization: Optional[str] = Header(None)):
+    current_user = resolve_user_from_token_or_header(authorization) or SYNTHETIC_USERS[101]
+    decision = CentralAuthorizationEngine.evaluate_request(
+        current_user=current_user,
+        action="UPDATE",
+        resource_type="ADMIN_FUNCTION",
+        required_permission="ROLE_MODIFY",
+        endpoint_path=f"/api/v1/bank/admin/users/{user_id}",
+    )
+    if decision.decision == "DENY":
+        raise HTTPException(status_code=decision.status_code, detail={"reason": decision.reason, "policy": decision.policy})
+    return {"status": "200 OK", "message": f"Synthetic user {user_id} role updated (demo simulation)"}
+
+
+@router.post("/bank/admin/users/{user_id}/lock")
+async def bank_admin_lock_user(user_id: int, authorization: Optional[str] = Header(None)):
+    current_user = resolve_user_from_token_or_header(authorization) or SYNTHETIC_USERS[101]
+    decision = CentralAuthorizationEngine.evaluate_request(
+        current_user=current_user,
+        action="UPDATE",
+        resource_type="ADMIN_FUNCTION",
+        required_permission="ROLE_MODIFY",
+        endpoint_path=f"/api/v1/bank/admin/users/{user_id}/lock",
+    )
+    if decision.decision == "DENY":
+        raise HTTPException(status_code=decision.status_code, detail={"reason": decision.reason, "policy": decision.policy})
+    return {"status": "200 OK", "message": f"Synthetic user {user_id} locked (demo simulation)"}
+
+
+@router.get("/bank/admin/system-logs")
+async def bank_admin_get_system_logs(authorization: Optional[str] = Header(None)):
+    current_user = resolve_user_from_token_or_header(authorization) or SYNTHETIC_USERS[101]
+    decision = CentralAuthorizationEngine.evaluate_request(
+        current_user=current_user,
+        action="READ",
+        resource_type="ADMIN_FUNCTION",
+        required_permission="ADMIN_DASHBOARD",
+        endpoint_path="/api/v1/bank/admin/system-logs",
+    )
+    if decision.decision == "DENY":
+        raise HTTPException(status_code=decision.status_code, detail={"reason": decision.reason, "policy": decision.policy})
+    return {"status": "200 OK", "logs": ["System startup OK", "HSM connected"]}
+
+
+@router.get("/bank/admin/policy-override")
+async def bank_admin_get_policy_override(authorization: Optional[str] = Header(None)):
+    current_user = resolve_user_from_token_or_header(authorization) or SYNTHETIC_USERS[101]
+    decision = CentralAuthorizationEngine.evaluate_request(
+        current_user=current_user,
+        action="READ",
+        resource_type="ADMIN_FUNCTION",
+        required_permission="ADMIN_DASHBOARD",
+        endpoint_path="/api/v1/bank/admin/policy-override",
+    )
+    if decision.decision == "DENY":
+        raise HTTPException(status_code=decision.status_code, detail={"reason": decision.reason, "policy": decision.policy})
+    return {"status": "200 OK", "policy_overrides": []}
+
+
+@router.get("/bank/compliance-report")
+async def bank_get_compliance_report(authorization: Optional[str] = Header(None)):
+    current_user = resolve_user_from_token_or_header(authorization) or SYNTHETIC_USERS[101]
+    decision = CentralAuthorizationEngine.evaluate_request(
+        current_user=current_user,
+        action="READ",
+        resource_type="AUDIT_SUMMARY",
+        required_permission="AUDIT_READ",
+        endpoint_path="/api/v1/bank/compliance-report",
+    )
+    if decision.decision == "DENY":
+        raise HTTPException(status_code=decision.status_code, detail={"reason": decision.reason, "policy": decision.policy})
+    return {"status": "200 OK", "compliance": "Full compliance verified"}
+
+
 @router.get("/bank/admin/audit-logs")
+
 async def bank_admin_get_audit_logs(authorization: Optional[str] = Header(None)):
     current_user = resolve_user_from_token_or_header(authorization) or SYNTHETIC_USERS[101]
 
