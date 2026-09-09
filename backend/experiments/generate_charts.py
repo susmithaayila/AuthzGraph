@@ -34,9 +34,9 @@ def generate_paper_charts():
 
     # Set publication aesthetic parameters
     plt.rcParams["font.family"] = "sans-serif"
-    plt.rcParams["font.size"] = 10
-    plt.rcParams["axes.titlesize"] = 12
-    plt.rcParams["axes.labelsize"] = 11
+    plt.rcParams["font.size"] = 9
+    plt.rcParams["axes.titlesize"] = 11
+    plt.rcParams["axes.labelsize"] = 10
 
     # -------------------------------------------------------------------------
     # Chart 1: Exposure Rate Comparison (Vulnerable vs Secure)
@@ -51,32 +51,32 @@ def generate_paper_charts():
     vuln_er = [vuln_vectors[c]["exposure_rate_pct"] for c in categories]
     sec_er = [sec_vectors[c]["exposure_rate_pct"] for c in categories]
 
-    clean_categories = [c.replace("_", "\n") for c in categories]
+    clean_categories = [c.replace("_", " ") for c in categories]
 
     x = np.arange(len(categories))
     width = 0.35
 
-    fig, ax = plt.subplots(figsize=(8, 4.5), dpi=300)
+    fig, ax = plt.subplots(figsize=(11, 5.2), dpi=300)
     rects1 = ax.bar(x - width/2, vuln_er, width, label="Vulnerable Mode", color="#e63946", edgecolor="black")
     rects2 = ax.bar(x + width/2, sec_er, width, label="AuthzGraph Secure Mode", color="#2a9d8f", edgecolor="black")
 
-    ax.set_ylabel("Vulnerability Exposure Rate (%)")
-    ax.set_title("Figure 1: Attack Exposure Rate Comparison (Vulnerable vs AuthzGraph Pipeline)")
+    ax.set_ylabel("Vulnerability Exposure Rate (%)", fontweight="bold")
+    ax.set_title("Figure 1: Attack Exposure Rate Comparison (Vulnerable vs AuthzGraph Pipeline)", fontweight="bold", pad=12)
     ax.set_xticks(x)
-    ax.set_xticklabels(clean_categories)
-    ax.set_ylim(0, 115)
+    ax.set_xticklabels(clean_categories, rotation=30, ha="right", fontsize=8, fontweight="bold")
+    ax.set_ylim(0, 118)
     ax.legend(loc="upper right")
     ax.grid(axis="y", linestyle="--", alpha=0.5)
 
     for rect in rects1:
         h = rect.get_height()
         ax.annotate(f"{h:.1f}%", xy=(rect.get_x() + rect.get_width()/2, h),
-                    xytext=(0, 3), textcoords="offset points", ha="center", va="bottom", fontsize=8)
+                    xytext=(0, 3), textcoords="offset points", ha="center", va="bottom", fontsize=8, fontweight="bold")
 
     for rect in rects2:
         h = rect.get_height()
         ax.annotate(f"{h:.1f}%", xy=(rect.get_x() + rect.get_width()/2, h),
-                    xytext=(0, 3), textcoords="offset points", ha="center", va="bottom", fontsize=8)
+                    xytext=(0, 3), textcoords="offset points", ha="center", va="bottom", fontsize=8, fontweight="bold")
 
     fig.tight_layout()
     chart1_png = os.path.join(charts_dir, "figure1_exposure_rate.png")
@@ -87,40 +87,61 @@ def generate_paper_charts():
     print(f"[OK] Generated Chart 1: {chart1_png}")
 
     # -------------------------------------------------------------------------
-    # Chart 2: Ablation Matrix Heatmap / Bar Breakdown
+    # Chart 2: Full 7x7 Layer-Ablation Matrix Heatmap
     # -------------------------------------------------------------------------
     with open(ablation_file, "r", encoding="utf-8") as f:
         ablation_data = json.load(f)
 
     matrix = ablation_data["ablation_matrix"]
-    config_labels = [row["disabled_layer"] for row in matrix]
-    bola_rates = [row["bola_exposure_pct"] for row in matrix]
-    bopla_rates = [row["bopla_exposure_pct"] for row in matrix]
-    bfla_rates = [row["bfla_exposure_pct"] for row in matrix]
+    row_labels = [row["config_name"] for row in matrix]
 
-    fig, ax = plt.subplots(figsize=(8.5, 4.5), dpi=300)
-    x = np.arange(len(config_labels))
-    w = 0.25
+    col_keys = [
+        ("rbac_exposure_pct", "RBAC ER"),
+        ("bfla_exposure_pct", "BFLA ER"),
+        ("bopla_exposure_pct", "BOPLA ER"),
+        ("bola_exposure_pct", "BOLA ER"),
+        ("abac_exposure_pct", "ABAC ER"),
+        ("mac_exposure_pct", "MAC Read ER"),
+        ("mac_write_exposure_pct", "MAC Write ER"),
+    ]
+    col_labels = [c[1] for c in col_keys]
 
-    ax.bar(x - w, bola_rates, w, label="BOLA Exposure (%)", color="#d62728", edgecolor="black")
-    ax.bar(x, bopla_rates, w, label="BOPLA Exposure (%)", color="#ff7f0e", edgecolor="black")
-    ax.bar(x + w, bfla_rates, w, label="BFLA Exposure (%)", color="#1f77b4", edgecolor="black")
+    data_matrix = []
+    for row in matrix:
+        r_vals = [float(row.get(c[0], 0.0)) for c in col_keys]
+        data_matrix.append(r_vals)
 
-    ax.set_ylabel("Vulnerability Class Exposure (%)")
-    ax.set_title("Figure 2: Layer-Ablation Study (Impact of Disabling Specific Policy Layers)")
-    ax.set_xticks(x)
-    ax.set_xticklabels(config_labels, rotation=15)
-    ax.set_ylim(0, 115)
-    ax.legend(loc="upper right")
-    ax.grid(axis="y", linestyle="--", alpha=0.5)
+    data_arr = np.array(data_matrix)
 
+    fig, ax = plt.subplots(figsize=(9.5, 5.5), dpi=300)
+    im = ax.imshow(data_arr, cmap="YlOrRd", vmin=0, vmax=100, aspect="auto")
+
+    ax.set_xticks(np.arange(len(col_labels)))
+    ax.set_yticks(np.arange(len(row_labels)))
+    ax.set_xticklabels(col_labels, fontsize=9, fontweight="bold")
+    ax.set_yticklabels(row_labels, fontsize=9, fontweight="bold")
+
+    plt.setp(ax.get_xticklabels(), rotation=25, ha="right", rotation_mode="anchor")
+
+    for i in range(len(row_labels)):
+        for j in range(len(col_labels)):
+            val = data_arr[i, j]
+            color = "white" if val > 50 else "black"
+            fontweight = "bold" if val > 0 else "normal"
+            text_str = f"{val:.0f}%" if val > 0 else "0%"
+            ax.text(j, i, text_str, ha="center", va="center", color=color, fontsize=10, fontweight=fontweight)
+
+    cbar = ax.figure.colorbar(im, ax=ax, shrink=0.85)
+    cbar.ax.set_ylabel("Vulnerability Exposure Rate (%)", rotation=-90, va="bottom", fontsize=9, fontweight="bold")
+
+    ax.set_title("Figure 2: 9-Layer Policy Pipeline Ablation Matrix (1:1 Layer Attribution Heatmap)", fontsize=11, fontweight="bold", pad=15)
     fig.tight_layout()
     chart2_png = os.path.join(charts_dir, "figure2_ablation_study.png")
     chart2_svg = os.path.join(charts_dir, "figure2_ablation_study.svg")
     plt.savefig(chart2_png)
     plt.savefig(chart2_svg)
     plt.close()
-    print(f"[OK] Generated Chart 2: {chart2_png}")
+    print(f"[OK] Generated Chart 2 (7x7 Heatmap): {chart2_png}")
 
     print(f"[SUCCESS] Publication charts successfully generated in: {charts_dir}")
 

@@ -62,10 +62,13 @@ def render_benchmark_markdown(summary: dict) -> str:
     for vector in vuln_vectors:
         v_er = vuln_vectors[vector].get("exposure_rate_pct", "N/A")
         s_er = sec_vectors.get(vector, {}).get("exposure_rate_pct", "N/A")
-        v_ci_low = vuln_vectors[vector].get("ci_95_low", "")
-        v_ci_high = vuln_vectors[vector].get("ci_95_high", "")
-        ci_str = f" (95% CI: [{v_ci_low}, {v_ci_high}])" if v_ci_low != "" else ""
+        v_bci = vuln_vectors[vector].get("binomial_ci_95")
+        if v_bci and isinstance(v_bci, list) and len(v_bci) == 2:
+            ci_str = f" (95% CI: [{float(v_bci[0]):.1f}%, {float(v_bci[1]):.1f}%])"
+        else:
+            ci_str = ""
         lines.append(f"| {vector} | {v_er}%{ci_str} | {s_er}% |")
+
 
     lat_overhead = es.get("latency_overhead_ms", 0.0)
     lat_str = f"{lat_overhead:+.3f}" if isinstance(lat_overhead, (int, float)) else f"{lat_overhead}"

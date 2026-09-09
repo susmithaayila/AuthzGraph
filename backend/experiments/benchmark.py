@@ -385,6 +385,8 @@ def run_http_benchmark(base_url: str = DEFAULT_BASE_URL, trials_per_vector: int 
             stats = {
                 "exposure_rate_pct": er_pct,
                 "binomial_ci_95": [ci_low, ci_high],
+                "ci_95_low": ci_low,
+                "ci_95_high": ci_high,
                 "trials": trials_per_vector,
                 "exposures": exposures,
                 "latency_e2e": stats_e2e,
@@ -396,9 +398,8 @@ def run_http_benchmark(base_url: str = DEFAULT_BASE_URL, trials_per_vector: int 
                 "p50": stats_e2e["p50"],
                 "p90": stats_e2e["p90"],
                 "p99": stats_e2e["p99"],
-                "ci_95_low": stats_e2e["ci_95_low"],
-                "ci_95_high": stats_e2e["ci_95_high"],
             }
+
             vector_stats[vector] = stats
 
         # Control Set (Legitimate Traffic to measure False Positives)
