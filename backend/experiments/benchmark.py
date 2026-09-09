@@ -268,8 +268,7 @@ def run_http_benchmark(base_url: str = DEFAULT_BASE_URL, trials_per_vector: int 
                     res = client.get(f"/bank/users/{target_id}", headers=headers_alice)
                     status_code = res.status_code
                     if status_code == 200 and mode == "vulnerable":
-                        if target_id not in (108, 109):
-                            exposed = True
+                        exposed = True
 
                 elif vector == "BOLA_ENUMERATION":
                     target_id = params["target_id"]
@@ -277,8 +276,7 @@ def run_http_benchmark(base_url: str = DEFAULT_BASE_URL, trials_per_vector: int 
                     res = client.get(f"/bank/accounts/{account_id}", headers=headers_alice)
                     status_code = res.status_code
                     if status_code == 200 and mode == "vulnerable":
-                        if target_id not in (107, 108, 109):
-                            exposed = True
+                        exposed = True
 
                 elif vector == "BOPLA_MASS_ASSIGNMENT":
                     inj_field = params["injected_field"]
@@ -287,16 +285,14 @@ def run_http_benchmark(base_url: str = DEFAULT_BASE_URL, trials_per_vector: int 
                     res = client.patch("/bank/users/101", json=payload, headers=headers_alice)
                     status_code = res.status_code
                     if status_code == 200 and mode == "vulnerable":
-                        if inj_field != "isVerified" and (inj_field != "internalRiskScore" or i % 3 != 0):
-                            exposed = True
+                        exposed = True
 
                 elif vector == "BFLA_ADMIN_PROBING":
                     route = params["admin_route"]
                     res = client.get(route, headers=headers_alice)
                     status_code = res.status_code
                     if status_code == 200 and mode == "vulnerable":
-                        if route != "/bank/admin/policy-override" or i % 4 != 0:
-                            exposed = True
+                        exposed = True
 
                 elif vector == "BFLA_VERB_SWITCHING":
                     method = params["method"]
@@ -304,8 +300,7 @@ def run_http_benchmark(base_url: str = DEFAULT_BASE_URL, trials_per_vector: int 
                     res = client.request(method, path, headers=headers_alice)
                     status_code = res.status_code
                     if status_code == 200 and mode == "vulnerable":
-                        if method != "POST" or i % 3 != 0:
-                            exposed = True
+                        exposed = True
 
                 elif vector == "ABAC_CROSS_REGION":
                     tok = params["token"]
@@ -313,8 +308,7 @@ def run_http_benchmark(base_url: str = DEFAULT_BASE_URL, trials_per_vector: int 
                     res = client.get(f"/bank/documents/{doc_id}", headers={"Authorization": f"Bearer {tok}"})
                     status_code = res.status_code
                     if status_code == 200 and mode == "vulnerable":
-                        if tok != MANAGER_EAST_TOKEN or i % 3 != 0:
-                            exposed = True
+                        exposed = True
 
                 elif vector == "ABAC_CROSS_DEPARTMENT":
                     tok = params["token"]
@@ -322,8 +316,7 @@ def run_http_benchmark(base_url: str = DEFAULT_BASE_URL, trials_per_vector: int 
                     res = client.get(f"/bank/documents/{doc_id}", headers={"Authorization": f"Bearer {tok}"})
                     status_code = res.status_code
                     if status_code == 200 and mode == "vulnerable":
-                        if doc_id != 511 or i % 3 != 0:
-                            exposed = True
+                        exposed = True
 
                 elif vector == "MAC_READ_UP_VIOLATION":
                     tok = params["token"]
@@ -331,8 +324,7 @@ def run_http_benchmark(base_url: str = DEFAULT_BASE_URL, trials_per_vector: int 
                     res = client.get(f"/bank/documents/{doc_id}", headers={"Authorization": f"Bearer {tok}"})
                     status_code = res.status_code
                     if status_code == 200 and mode == "vulnerable":
-                        if doc_id != 512 or i % 4 != 0:
-                            exposed = True
+                        exposed = True
 
                 elif vector == "MAC_WRITE_DOWN_VIOLATION":
                     tok = params["token"]
@@ -340,16 +332,14 @@ def run_http_benchmark(base_url: str = DEFAULT_BASE_URL, trials_per_vector: int 
                     res = client.patch(f"/bank/documents/{doc_id}/classify", json={"classification": "PUBLIC"}, headers={"Authorization": f"Bearer {tok}"})
                     status_code = res.status_code
                     if status_code == 200 and mode == "vulnerable":
-                        if doc_id != 504 or i % 4 != 0:
-                            exposed = True
+                        exposed = True
 
                 elif vector == "RBAC_PERMISSION_DENIED":
                     ep = params["endpoint"]
                     res = client.get(ep, headers=headers_alice)
                     status_code = res.status_code
                     if status_code == 200 and mode == "vulnerable":
-                        if ep != "/bank/compliance-report" or i % 3 != 0:
-                            exposed = True
+                        exposed = True
 
 
                 t1 = time.perf_counter()
