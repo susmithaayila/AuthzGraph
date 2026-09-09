@@ -1,6 +1,6 @@
 {
   "title": "AuthzGraph Layer-Ablation Matrix Results",
-  "timestamp": "20260909T055944Z",
+  "timestamp": "20260909T061208Z",
   "trials_per_config": 20,
   "ablation_matrix": [
     {

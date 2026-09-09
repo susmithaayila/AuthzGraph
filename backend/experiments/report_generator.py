@@ -18,9 +18,10 @@ def exact_binomial_ci(successes: int, n: int, confidence: float = 0.95) -> tuple
     if n == 0:
         return (0.0, 0.0)
     alpha = 1 - confidence
-    lo = 0.0 if successes == 0 else beta.ppf(alpha / 2, successes, n - successes + 1)
-    hi = 1.0 if successes == n else beta.ppf(1 - alpha / 2, successes + 1, n - successes)
-    return (round(lo * 100, 1), round(hi * 100, 1))
+    lo = 0.0 if successes == 0 else float(beta.ppf(alpha / 2, successes, n - successes + 1))
+    hi = 1.0 if successes == n else float(beta.ppf(1 - alpha / 2, successes + 1, n - successes))
+    return (round(float(lo * 100), 1), round(float(hi * 100), 1))
+
 
 
 
