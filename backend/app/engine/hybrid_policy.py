@@ -1,5 +1,5 @@
 import time
-from typing import Dict, List, Any
+from typing import Dict, Any
 from app.engine.object_graph import UserIdentity, ResourceObject
 
 CLEARANCE_LEVELS = {"PUBLIC": 1, "INTERNAL": 2, "CONFIDENTIAL": 3, "SECRET": 4}
@@ -42,15 +42,15 @@ class HybridPolicyEvaluator:
     @classmethod
     def evaluate(cls, user: UserIdentity, action: str, resource: ResourceObject, required_role_level: int = 1, context: Dict[str, Any] = None) -> bool:
         context = context or {}
-        
+
         # Guardrail MAC check
         if not cls.mac_allows(user.clearance, resource.classification):
             return False
-            
+
         # RBAC or ABAC evaluation
         rbac_result = cls.rbac_allows(user.role_level, required_role_level)
         abac_result = cls.abac_allows(user.attributes, resource.attributes, context)
-        
+
         return rbac_result or abac_result
 
     @classmethod

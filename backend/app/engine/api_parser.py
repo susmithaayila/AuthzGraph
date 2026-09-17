@@ -1,6 +1,6 @@
 import re
 from typing import Dict, List, Any, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 class APIEndpoint(BaseModel):
     id: str
@@ -28,23 +28,23 @@ class APIParser:
         for path, path_item in paths.items():
             if not isinstance(path_item, dict):
                 continue
-            
+
             # Extract common path parameters if any
             common_params = path_item.get("parameters", [])
 
             for method in ["get", "post", "put", "patch", "delete", "head", "options"]:
                 if method not in path_item:
                     continue
-                
+
                 op_data = path_item[method]
                 endpoint_id = f"{method.upper()}_{path}"
-                
+
                 summary = op_data.get("summary", "")
                 description = op_data.get("description", "")
-                
+
                 # Combine common and method-specific parameters
                 all_params = list(common_params) + op_data.get("parameters", [])
-                
+
                 path_params = []
                 query_params = []
                 for param in all_params:
@@ -55,7 +55,7 @@ class APIParser:
                             path_params.append(p_name)
                         elif p_in == "query" and p_name:
                             query_params.append(p_name)
-                            
+
                 # Determine request body schema (OpenAPI v3 vs v2)
                 req_schema = None
                 if "requestBody" in op_data:
@@ -67,7 +67,7 @@ class APIParser:
                         if isinstance(p, dict) and p.get("in") == "body":
                             req_schema = p.get("schema")
                             break
-                            
+
                 # Responses schema mapping
                 resp_schemas = {}
                 responses = op_data.get("responses", {})
@@ -82,7 +82,7 @@ class APIParser:
                 # Infer produced and consumed object types from path and parameter names
                 consumed_types = APIParser._infer_consumed_objects(path, path_params, req_schema)
                 produced_types = APIParser._infer_produced_objects(method, resp_schemas)
-                
+
                 # Infer sensitivity label from path/summary keywords
                 sensitivity = APIParser._infer_sensitivity(path, summary, description)
 
@@ -111,11 +111,11 @@ class APIParser:
         for p in path_params:
             clean_name = re.sub(r'(_id|Id|ID)$', '', p)
             types.add(clean_name.lower())
-        
+
         segments = [s for s in path.split('/') if s and not s.startswith('{')]
         if segments:
             types.add(segments[-1].lower())
-            
+
         return list(types)
 
     @staticmethod

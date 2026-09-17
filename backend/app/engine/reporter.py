@@ -1,4 +1,4 @@
-from typing import Dict, List, Any
+from typing import Dict, Any
 from pydantic import BaseModel, Field
 
 class Finding(BaseModel):

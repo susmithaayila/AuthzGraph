@@ -1,6 +1,5 @@
-import copy
 import re
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 VOLATILE_KEYS = {
     "timestamp", "created_at", "updated_at", "expires_at", "date",
@@ -36,7 +35,7 @@ class ResponseNormalizer:
         norm_sub = cls.normalize_payload(substituted)
 
         return {
-            "is_structural_match": type(norm_orig) == type(norm_sub),
+            "is_structural_match": isinstance(norm_sub, type(norm_orig)),
             "normalized_original": norm_orig,
             "normalized_substituted": norm_sub
         }

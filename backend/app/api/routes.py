@@ -1,5 +1,4 @@
 import asyncio
-import json
 import uuid
 import urllib.parse
 from datetime import datetime, timezone
@@ -7,8 +6,7 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException, UploadFile, File,
 from pydantic import BaseModel
 from typing import Dict, List, Any, Optional
 
-from app.engine.api_parser import APIParser, APIEndpoint
-from app.engine.dependency_graph import RequestDependencyGraph
+from app.engine.api_parser import APIEndpoint
 from app.engine.object_graph import MultiUserObjectGraph, UserIdentity, ResourceObject
 from app.engine.hybrid_policy import HybridPolicyEvaluator
 from app.engine.manifest import PrivilegeManifest
@@ -29,7 +27,6 @@ from app.engine.bank_data import (
     SYNTHETIC_TRANSACTIONS,
     SYNTHETIC_DOCUMENTS,
     SYNTHETIC_TICKETS,
-    TOKEN_MAP,
 )
 from app.engine.authz_engine import (
     CentralAuthorizationEngine,
@@ -42,9 +39,8 @@ from app.engine.authz_engine import (
     clear_decision_logs,
     ROLE_PERMISSIONS,
     MAC_LEVELS,
-    AuthorizationDecision,
 )
-from app.engine.traffic_capture import record_traffic, get_captured_traffic, clear_captured_traffic
+from app.engine.traffic_capture import record_traffic, get_captured_traffic
 
 router = APIRouter()
 
@@ -1412,8 +1408,8 @@ async def bank_get_executive_report():
     mode = get_security_mode()
     logs = get_decision_logs(100)
 
-    blocked_count = sum(1 for l in logs if l.get("decision") == "DENY")
-    allowed_count = sum(1 for l in logs if l.get("decision") == "ALLOW")
+    blocked_count = sum(1 for log_entry in logs if log_entry.get("decision") == "DENY")
+    allowed_count = sum(1 for log_entry in logs if log_entry.get("decision") == "ALLOW")
 
     score_before = 32
     score_after = 96
@@ -1728,11 +1724,11 @@ async def api_get_anomaly_detection():
     distinct_objects = set()
     denial_count = 0
 
-    for l in logs:
-        if l.get("user_id"):
-            if "object" in str(l.get("reason", "")).lower() or l.get("endpoint"):
-                distinct_objects.add(l.get("endpoint"))
-        if l.get("decision") == "DENY":
+    for log_entry in logs:
+        if log_entry.get("user_id"):
+            if "object" in str(log_entry.get("reason", "")).lower() or log_entry.get("endpoint"):
+                distinct_objects.add(log_entry.get("endpoint"))
+        if log_entry.get("decision") == "DENY":
             denial_count += 1
 
     is_anomalous = len(distinct_objects) > 5 or denial_count > 10
@@ -1773,7 +1769,7 @@ async def api_bank_graphql(req: GraphQLRequest, authorization: Optional[str] = H
     # Parse simple GraphQL mutation/query operation
     q_str = req.query.strip()
     is_mutation = "mutation" in q_str
-    
+
     if "updateRole" in q_str:
         decision = CentralAuthorizationEngine.evaluate_request(
             current_user=current_user,

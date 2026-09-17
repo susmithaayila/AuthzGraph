@@ -1,4 +1,4 @@
-from typing import Dict, List, Any, Set
+from typing import Dict, List
 import re
 from app.engine.api_parser import APIEndpoint
 
@@ -30,7 +30,7 @@ class RequestDependencyGraph:
                     if prod_type not in self.producers:
                         self.producers[prod_type] = []
                     self.producers[prod_type].append(ep)
-                
+
                 # Fallback: Infer produced type from path basename if list is empty
                 path_base = ep.path.strip('/').split('/')[-1]
                 path_type = re.sub(r'[^a-zA-Z0-9]', '', path_base).lower()

@@ -1,0 +1,9 @@
+# ruff linting config (CI uses: ruff check app/)
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+exclude = ["__pycache__", ".pytest_cache"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = ["E501"]  # line length handled above

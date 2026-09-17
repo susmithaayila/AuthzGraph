@@ -1,113 +1,122 @@
-# AuthzGraph 🛡️
+# SecureShare — Automated REST API Authorization Security Platform
 
-**AuthzGraph** is an automated REST API Authorization Vulnerability Tester & Hybrid Access Control Engine. It is designed to discover, analyze, and remediate authorization flaws across multi-user REST API microservices, including:
-
-- **BOLA (Broken Object Level Authorization)** / IDOR
-- **BFLA (Broken Function Level Authorization)** / Privilege Escalation
-- **BOPLA (Broken Object Property Level Authorization)** / Mass Assignment & Excessive Data Exposure
+> **SecureShare** is an industry-grade, OpenAPI-driven API security platform that automatically detects **BOLA**, **BFLA**, and **BOPLA** authorization vulnerabilities across multi-user REST API microservices, powered by a Hybrid **MAC + RBAC + ABAC** access control decision engine.
 
 ---
 
-## 🏗️ Architecture & Project Structure
+## 🔍 What It Does
 
-The repository is structured into three main modules:
+- **Parses OpenAPI v3 specs** and builds a stateful multi-user object ownership graph (NetworkX)
+- **Detects all 3 OWASP API Top-10 authorization vulnerability classes** automatically:
+  - `BOLA` (API1:2023) — Broken Object Level Authorization
+  - `BFLA` (API5:2023) — Broken Function Level Authorization
+  - `BOPLA` (API3:2023) — Broken Object Property Level Authorization
+- **Hybrid Policy Engine** — formally evaluates `MAC ∧ (RBAC ∨ ABAC)` at 100K+ decisions/sec
+- **Real-Time Risk Orbit** — live radial canvas visualization showing API risk scores
+- **CVSS v3.1 Scoring** — deterministic severity scoring for every finding
+- **1-Click Remediation** — cURL repros + FastAPI / Express / Spring Boot fix snippets
+
+---
+
+## 🏗️ Architecture
 
 ```
-AuthzGraph/
-├── backend/            # FastAPI Security Engine & REST API
-│   ├── app/            # Engines (API Parser, Object Graph, BOLA/BFLA/BOPLA, Guardrails)
-│   ├── main.py         # Entry point for backend server (Port 8000)
-│   └── requirements.txt
-├── frontend/           # B2B Enterprise Security Dashboard (React + Vite + TypeScript)
-│   ├── src/            # Components, pages, and graph visualizer
-│   ├── package.json
-│   └── vite.config.ts  # Dev server configuration (Port 5173)
-├── target_app/         # RideX Benchmark Demo API (Vulnerable Microservice target)
-│   ├── main.py         # Target app entry point (Port 8080)
-│   ├── dashboard.html  # Live demo target dashboard
-│   ├── start.bat       # Windows quick-start launcher
-│   └── requirements.txt
-└── Docs/               # System implementation plan and design docs
+OpenAPI Spec → Dependency Graph → Multi-User Object Graph
+                                          ↓
+                             BOLA / BFLA / BOPLA Engines
+                                          ↓
+                    Hybrid MAC/RBAC/ABAC Policy Evaluator
+                                          ↓
+                    CVSS v3.1 Reporter → Risk Orbit UI
 ```
 
 ---
 
-## ⚡ Quick Start & How to Run
+## 🚀 Quick Start
 
-### Prerequisites
-
-- **Python 3.10+** (with `pip`)
-- **Node.js 18+** (with `npm`)
-
----
-
-### Step 1: Start the Target Application (RideX Demo)
-
-In terminal window #1:
-
+### Option 1 — Docker Compose (Full Stack)
 ```bash
-cd target_app
-pip install -r requirements.txt
-uvicorn main:app --host 0.0.0.0 --port 8080 --reload
+docker-compose up --build
 ```
-> *Or on Windows, double-click [`target_app/start.bat`](target_app/start.bat).*
-> - **RideX Target UI:** [http://localhost:8080/dashboard](http://localhost:8080/dashboard)
-> - **RideX OpenAPI Specs:** [http://localhost:8080/docs](http://localhost:8080/docs)
+Opens:
+- **UI** → http://localhost:80
+- **API** → http://localhost:8000
+- **crAPI target** → http://localhost:8080
+- **VAmPI target** → http://localhost:5000
 
----
-
-### Step 2: Start the AuthzGraph Backend Engine
-
-In terminal window #2:
-
+### Option 2 — Local Development
 ```bash
+# Backend
 cd backend
 pip install -r requirements.txt
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-```
-> - **Backend API Docs (Swagger UI):** [http://localhost:8000/docs](http://localhost:8000/docs)
+uvicorn main:app --reload --port 8000
 
----
-
-### Step 3: Start the AuthzGraph Frontend Dashboard
-
-In terminal window #3:
-
-```bash
+# Frontend
 cd frontend
 npm install
 npm run dev
 ```
-> - **AuthzGraph Security Console:** [http://localhost:5173](http://localhost:5173)
 
 ---
 
-## 🔬 Research & Empirical Reproducibility Suite
-
-AuthzGraph includes a master experiment runner to reproduce all paper results, ablation matrices, and statistical figures with one command:
+## 🧪 Test Suite (36/36 Passing)
 
 ```bash
 cd backend
-python -m experiments.run_all
+python -m pytest -v
 ```
 
-This pipeline automatically executes:
-1. **HTTP Benchmark Harness (`experiments/benchmark.py`)**: Attacks the live backend API surface across 5 vector categories in both VULNERABLE and SECURE modes to compute Exposure Rates (ER), P50/P90/P99 Latency Percentiles, and False Positive Rates (FPR).
-2. **Layer-Ablation Study (`experiments/ablation.py`)**: Sweeps 7 policy layer configurations (disabling RBAC, BFLA, BOPLA, BOLA, ABAC, MAC independently) to empirically prove layer attribution.
-3. **Publication Chart Generator (`experiments/generate_charts.py`)**: Output high-resolution SVG and PNG charts saved under `backend/experiments/results/charts/`.
+| Test File | Tests | Coverage |
+|---|---|---|
+| `test_engine.py` | 5 | Core parser, hybrid policy, normalizer, guardrails |
+| `test_abac_mac_isolation.py` | 14 | MAC read-up/write-down, ABAC region isolation, RBAC |
+| `test_securebank_authz.py` | 15 | BOLA/BFLA/BOPLA vulnerable vs. secure mode |
+| `test_research_contributions.py` | 4 | Scale benchmarks, ablation study, attack graphs |
 
 ---
 
-## 🔍 Key Features
+## 🔁 CI/CD Pipeline (GitHub Actions)
 
-- **OpenAPI v2/v3 Dynamic Ingestion**: Automatic endpoint schema parsing and dependency identification.
-- **Stateful Object Ownership Graph**: Multi-user resource identity and ownership mapping (`User A -[OWNS]-> Resource 101`).
-- **6-Layer Defense-in-Depth Policy Pipeline**: Conjunction of RBAC, BFLA, BOPLA, BOLA, ABAC, and MAC checks for complete mediation.
-- **Empirical Layer-Ablation Harness**: Quantitative proof of individual layer necessity against OWASP API1, API3, and API5 vulnerabilities.
-- **Target Application Harness**: Integrated RideX benchmark API for security evaluation.
+| Trigger | Workflow | Action |
+|---|---|---|
+| Push / PR | `ci.yml` | ruff lint + pytest + npm build |
+| Merge to `main` | `docker.yml` | Build & push Docker images to GHCR |
 
 ---
 
-## 📜 License
+## 📁 Project Structure
 
-This project is licensed under the MIT License.
+```
+secureshare/
+├── .github/workflows/    # GitHub Actions CI/CD
+├── backend/
+│   ├── app/
+│   │   ├── api/          # FastAPI routes
+│   │   ├── core/         # Safety guardrails
+│   │   └── engine/       # All detection engines
+│   ├── tests/            # 36 pytest tests
+│   ├── Dockerfile
+│   └── requirements.txt
+├── frontend/
+│   ├── src/components/   # 13 React UI components
+│   ├── Dockerfile
+│   └── nginx.conf
+├── target_app/           # Custom vulnerable benchmark API
+├── docker-compose.yml
+└── Docs/
+```
+
+---
+
+## 📚 Base Papers
+
+1. Atlidakis et al., *RESTler: Stateful REST API Fuzzing*, ICSE 2019
+2. Atlidakis et al., *Checking Security Properties of Cloud REST APIs*, ICST 2020
+3. Servos & Osborn, *Current Research in ABAC*, ACM CSUR 2017
+
+---
+
+## 👩‍💻 Author
+
+**A. Susmitha** — CYS495 Project | Amrita Vishwa Vidyapeetham, Chennai  
+Guide: **Dr. K. Venkatesan**

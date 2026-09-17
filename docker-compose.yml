@@ -1,0 +1,88 @@
+version: "3.9"
+
+services:
+  # ── AuthzGraph FastAPI Backend ────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: authzgraph-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - authzgraph-net
+
+  # ── AuthzGraph React Frontend (nginx) ─────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: authzgraph-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - authzgraph-net
+
+  # ── crAPI Benchmark Target (OWASP Vulnerable API) ─────────────────
+  crapi:
+    image: crapi/crapi:latest
+    container_name: crapi-target
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_NAME=crapi
+      - DB_USER=admin
+      - DB_PASSWORD=crapisecretpassword
+      - DB_HOST=crapi-db
+    depends_on:
+      - crapi-db
+      - crapi-mailhog
+    networks:
+      - authzgraph-net
+
+  crapi-db:
+    image: postgres:14-alpine
+    container_name: crapi-postgres
+    environment:
+      POSTGRES_DB: crapi
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: crapisecretpassword
+    volumes:
+      - crapi-db-data:/var/lib/postgresql/data
+    networks:
+      - authzgraph-net
+
+  crapi-mailhog:
+    image: mailhog/mailhog
+    container_name: crapi-mailhog
+    ports:
+      - "8025:8025"
+    networks:
+      - authzgraph-net
+
+  # ── VAmPI Benchmark Target (Vulnerable/Patched Toggle) ────────────
+  vampi:
+    image: erev0s/vampi:latest
+    container_name: vampi-target
+    ports:
+      - "5000:5000"
+    networks:
+      - authzgraph-net
+
+# ── Volumes & Networks ────────────────────────────────────────────
+volumes:
+  crapi-db-data:
+
+networks:
+  authzgraph-net:
+    driver: bridge
