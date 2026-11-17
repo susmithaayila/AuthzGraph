@@ -1,10 +1,11 @@
-# AuthzGraph: Layered Authorization Engine & Empirical Security Benchmark
+# AuthzGraph: Specification-Driven Multi-Identity Testing and Layer-Ablation Analysis of REST API Authorization
 
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
 [![FastAPI 0.140.0](https://img.shields.io/badge/FastAPI-0.140.0-009688.svg)](https://fastapi.tiangolo.com/)
-[![License: Review Pending](https://img.shields.io/badge/License-MIT%20%2F%20Apache--2.0-lightgrey.svg)]()
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> Companion research repository for **"AuthzGraph: Layered Multi-Model Authorization Engine for REST APIs"** (ICCIDSDT 2027).
+> Companion research repository for **"AuthzGraph: Specification-Driven Multi-Identity Testing and Layer-Ablation Analysis of REST API Authorization"** (ICCIDSDT 2027).  
+> **Authors:** Ayila Susmitha, K. Venkatesan, Syarifah Bahiyah Rahayu
 
 ---
 
@@ -12,7 +13,10 @@
 
 **AuthzGraph** is an authorization mediation and vulnerability detection framework designed to mitigate Broken Object Level Authorization (BOLA), Broken Function Level Authorization (BFLA), and Broken Object Property Level Authorization (BOPLA) in RESTful microservices. 
 
-It implements a centralized, multi-model policy engine enforcing **Mandatory Access Control (MAC)**, **Role-Based Access Control (RBAC)**, and **Attribute-Based Access Control (ABAC)** over a stateful object-graph representation of API resources.
+It implements a centralized, multi-model policy engine enforcing a seven-stage authorization evaluation pipeline:
+$$\text{AuthN} \longrightarrow \text{BFLA} \longrightarrow \text{RBAC} \longrightarrow \text{BOPLA} \longrightarrow \text{BOLA} \longrightarrow \text{ABAC} \longrightarrow \text{MAC}$$
+
+The framework operates over a stateful object-relationship graph evaluated against the synthetic **SecureBank** benchmark dataset comprising **15 principals**, **4 roles** (`CUSTOMER`, `TELLER`, `MANAGER`, `AUDITOR`), and **12 documents** across multi-level security classifications (`PUBLIC`, `INTERNAL`, `CONFIDENTIAL`, `RESTRICTED`).
 
 ---
 
@@ -180,9 +184,15 @@ If you find this research or code useful in your academic work, please cite:
 
 ```bibtex
 @inproceedings{ayila2027authzgraph,
-  title={{AuthzGraph: Layered Multi-Model Authorization Engine for REST APIs}},
-  author={Ayila, Susmitha},
+  title={{AuthzGraph: Specification-Driven Multi-Identity Testing and Layer-Ablation Analysis of REST API Authorization}},
+  author={Ayila, Susmitha and Venkatesan, K. and Rahayu, Syarifah Bahiyah},
   booktitle={Proceedings of the International Conference on Computational Intelligence, Data Science and Security (ICCIDSDT 2027)},
   year={2027}
 }
 ```
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

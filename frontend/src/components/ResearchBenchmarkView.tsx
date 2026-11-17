@@ -5,13 +5,11 @@ import {
   GitCommit,
   Activity,
   Code,
-  Shield,
   Play,
   CheckCircle2,
   AlertTriangle,
   RefreshCw,
   Zap,
-  Lock,
 } from 'lucide-react';
 
 const API_BASE = 'http://localhost:8000/api/v1';
@@ -33,7 +31,7 @@ export function ResearchBenchmarkView() {
 
   // Anomaly & GraphQL state
   const [anomalyData, setAnomalyData] = useState<any>(null);
-  const [tokenExpData, setTokenExpData] = useState<any>(null);
+  const [, setTokenExpData] = useState<any>(null);
   const [graphqlQuery, setGraphqlQuery] = useState('mutation {\n  updateRole(user_id: 101, role: "ADMIN")\n}');
   const [graphqlRes, setGraphqlRes] = useState<any>(null);
   const [graphqlLoading, setGraphqlLoading] = useState(false);
