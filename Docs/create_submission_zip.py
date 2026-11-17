@@ -1,7 +1,7 @@
 import zipfile
 import os
 
-docs_dir = "C:/Users/ayila/OneDrive/Desktop/authgraph/Docs"
+docs_dir = os.path.dirname(os.path.abspath(__file__))
 template_dir = os.path.join(docs_dir, "LaTeX_Template")
 zip_path = os.path.join(docs_dir, "ICCIDSDT2027_Overleaf_Submission_Package.zip")
 

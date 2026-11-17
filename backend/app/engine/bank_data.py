@@ -23,8 +23,10 @@ INITIAL_SYNTHETIC_USERS: Dict[int, Dict[str, Any]] = {
         "accountBalance": 75000.00,
         "isVerified": True,
         "internalRiskScore": 12,
+        # synthetic test credential
         "token": "token_alice",
         "address": "742 Evergreen Terrace, Springfield, OR",
+        # synthetic test credential
         "aadhaar_last4": "8812",
         "account_id": "ACC-101",
     },

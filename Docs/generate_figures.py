@@ -1,6 +1,9 @@
+import os
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
+
+DOCS_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Set publication style
 plt.style.use('seaborn-v0_8-whitegrid' if 'seaborn-v0_8-whitegrid' in plt.style.available else 'default')
@@ -78,9 +81,9 @@ def draw_fig1_architecture():
     draw_arrow(6.5, 1.5, 7.4, 1.1)
 
     plt.tight_layout()
-    plt.savefig("C:/Users/ayila/OneDrive/Desktop/authgraph/Docs/fig1_architecture.png", dpi=300, bbox_inches='tight')
-    plt.savefig("C:/Users/ayila/OneDrive/Desktop/authgraph/Docs/intro.png", dpi=300, bbox_inches='tight')
-    plt.savefig("C:/Users/ayila/OneDrive/Desktop/authgraph/Docs/architecture_diagram.png", dpi=300, bbox_inches='tight')
+    plt.savefig(os.path.join(DOCS_DIR, "fig1_architecture.png"), dpi=300, bbox_inches='tight')
+    plt.savefig(os.path.join(DOCS_DIR, "intro.png"), dpi=300, bbox_inches='tight')
+    plt.savefig(os.path.join(DOCS_DIR, "architecture_diagram.png"), dpi=300, bbox_inches='tight')
     plt.close()
     print("Generated fig1_architecture.png")
 
@@ -118,8 +121,8 @@ def draw_fig2_pipeline():
                         arrowprops=dict(arrowstyle="->", color="#4A5568", lw=1.5, mutation_scale=12))
 
     plt.tight_layout()
-    plt.savefig("C:/Users/ayila/OneDrive/Desktop/authgraph/Docs/fig2_pipeline.png", dpi=300, bbox_inches='tight')
-    plt.savefig("C:/Users/ayila/OneDrive/Desktop/authgraph/Docs/algorithm2.png", dpi=300, bbox_inches='tight')
+    plt.savefig(os.path.join(DOCS_DIR, "fig2_pipeline.png"), dpi=300, bbox_inches='tight')
+    plt.savefig(os.path.join(DOCS_DIR, "algorithm2.png"), dpi=300, bbox_inches='tight')
     plt.close()
     print("Generated fig2_pipeline.png")
 
@@ -154,8 +157,8 @@ def draw_fig3_ablation_matrix():
     ax.set_ylabel("↓ Layer Disabled", fontsize=9.5, fontweight='bold')
 
     plt.tight_layout()
-    plt.savefig("C:/Users/ayila/OneDrive/Desktop/authgraph/Docs/fig3_ablation_matrix.png", dpi=300, bbox_inches='tight')
-    plt.savefig("C:/Users/ayila/OneDrive/Desktop/authgraph/Docs/algorithm.png", dpi=300, bbox_inches='tight')
+    plt.savefig(os.path.join(DOCS_DIR, "fig3_ablation_matrix.png"), dpi=300, bbox_inches='tight')
+    plt.savefig(os.path.join(DOCS_DIR, "algorithm.png"), dpi=300, bbox_inches='tight')
     plt.close()
     print("Generated fig3_ablation_matrix.png")
 
@@ -207,8 +210,8 @@ def draw_fig4_attack_success_rate():
                     ha='center', va='bottom', fontsize=8, fontweight='bold', color='#2B6CB0')
 
     plt.tight_layout()
-    plt.savefig("C:/Users/ayila/OneDrive/Desktop/authgraph/Docs/fig4_attack_success_rate.png", dpi=300, bbox_inches='tight')
-    plt.savefig("C:/Users/ayila/OneDrive/Desktop/authgraph/Docs/graph.png", dpi=300, bbox_inches='tight')
+    plt.savefig(os.path.join(DOCS_DIR, "fig4_attack_success_rate.png"), dpi=300, bbox_inches='tight')
+    plt.savefig(os.path.join(DOCS_DIR, "graph.png"), dpi=300, bbox_inches='tight')
     plt.close()
     print("Generated fig4_attack_success_rate.png")
 

@@ -1,4 +1,4 @@
-﻿"""
+"""
 AuthzGraph Cross-Application Generalizability Validation.
 Runs the same attack-vector logic used against RideX against vAPI
 (github.com/roottusk/vapi) running on its own local port.
@@ -36,16 +36,18 @@ DEFAULT_VAPI_URL = "http://localhost:5000"
 RESULTS_DIR = os.path.join("experiments", "results")
 
 
-def check_vapi_health(client: httpx.Client, base_url: str) -> bool:
-    """Try to reach vAPI. Returns True if reachable."""
-    for probe_path in ["/", "/api2/user", "/vapi/"]:
-        try:
-            r = client.get(f"{base_url}{probe_path}", timeout=5.0)
-            if r.status_code < 500:
-                return True
-        except Exception:
-            pass
-    return False
+def check_vapi_health(client: httpx.Client, base_url: str) -> tuple[bool, str]:
+    """Try to reach vAPI. Returns (is_reachable, prefix_detected)."""
+    for probe_prefix in ["", "/vapi"]:
+        for probe_path in ["/api1/user", "/api5/users", "/"]:
+            full_url = f"{base_url}{probe_prefix}{probe_path}"
+            try:
+                r = client.get(full_url, timeout=1.5)
+                if r.status_code < 500:
+                    return True, probe_prefix
+            except Exception:
+                pass
+    return False, ""
 
 
 def run_cross_app_validation(base_url: str = DEFAULT_VAPI_URL) -> list:
@@ -65,7 +67,8 @@ def run_cross_app_validation(base_url: str = DEFAULT_VAPI_URL) -> list:
     # Phase 1: Connectivity Check
     # ──────────────────────────────────────────────────────────────────────────
     print("[SETUP] Checking vAPI connectivity...")
-    if not check_vapi_health(client, base_url):
+    reachable, prefix = check_vapi_health(client, base_url)
+    if not reachable:
         print(f"[ERROR] Cannot reach vAPI at {base_url}")
         print()
         print("  To run vAPI locally:")
@@ -80,7 +83,7 @@ def run_cross_app_validation(base_url: str = DEFAULT_VAPI_URL) -> list:
             {
                 "target": "vAPI",
                 "vulnerability_class": "BOLA",
-                "endpoint": f"GET {base_url}/api2/user/{{id}}",
+                "endpoint": f"GET {base_url}{prefix}/api1/user/{{id}}",
                 "detected": "SKIPPED",
                 "evidence": "vAPI not reachable at " + base_url,
                 "status_code": None,
@@ -88,7 +91,7 @@ def run_cross_app_validation(base_url: str = DEFAULT_VAPI_URL) -> list:
             {
                 "target": "vAPI",
                 "vulnerability_class": "BFLA",
-                "endpoint": f"GET {base_url}/api6/user/dead",
+                "endpoint": f"GET {base_url}{prefix}/api5/users",
                 "detected": "SKIPPED",
                 "evidence": "vAPI not reachable at " + base_url,
                 "status_code": None,
@@ -98,17 +101,19 @@ def run_cross_app_validation(base_url: str = DEFAULT_VAPI_URL) -> list:
         _save_results(results)
         return results
 
-    print("[OK] vAPI is reachable.")
+    print(f"[OK] vAPI is reachable (prefix: '{prefix}').")
 
     # ──────────────────────────────────────────────────────────────────────────
     # Phase 2: Register two test users (if vAPI supports user creation)
     # ──────────────────────────────────────────────────────────────────────────
     ts = int(time.time())
+    # synthetic test credential
     user_a_creds = {
         "username": f"ag_user_a_{ts}",
         "password": "AuthzGraph_TestPass_A1!",
         "name": "AuthzGraph User A",
     }
+    # synthetic test credential
     user_b_creds = {
         "username": f"ag_user_b_{ts}",
         "password": "AuthzGraph_TestPass_B2!",
@@ -120,12 +125,11 @@ def run_cross_app_validation(base_url: str = DEFAULT_VAPI_URL) -> list:
     token_a = None
     token_b = None
 
-    print("[SETUP] Attempting to register test users via POST /api2/user...")
+    print(f"[SETUP] Attempting to register test users via POST {prefix}/api1/user...")
     try:
-        r_a = client.post(f"{base_url}/api2/user", json=user_a_creds)
+        r_a = client.post(f"{base_url}{prefix}/api1/user", json=user_a_creds)
         if r_a.status_code in (200, 201):
             body_a = r_a.json()
-            # vAPI may return token and id in various structures
             user_a_id = (
                 body_a.get("id")
                 or (body_a.get("user") or {}).get("id")
@@ -135,13 +139,14 @@ def run_cross_app_validation(base_url: str = DEFAULT_VAPI_URL) -> list:
                 body_a.get("token")
                 or (body_a.get("user") or {}).get("token")
                 or body_a.get("auth", {}).get("token")
+                or f"{user_a_creds['username']}:{user_a_creds['password']}"
             )
             print(f"   User A registered: id={user_a_id}, token={'***' if token_a else 'None'}")
     except Exception as e:
         print(f"   [WARN] User A registration failed: {e}")
 
     try:
-        r_b = client.post(f"{base_url}/api2/user", json=user_b_creds)
+        r_b = client.post(f"{base_url}{prefix}/api1/user", json=user_b_creds)
         if r_b.status_code in (200, 201):
             body_b = r_b.json()
             user_b_id = (
@@ -153,6 +158,7 @@ def run_cross_app_validation(base_url: str = DEFAULT_VAPI_URL) -> list:
                 body_b.get("token")
                 or (body_b.get("user") or {}).get("token")
                 or body_b.get("auth", {}).get("token")
+                or f"{user_b_creds['username']}:{user_b_creds['password']}"
             )
             print(f"   User B registered: id={user_b_id}, token={'***' if token_b else 'None'}")
     except Exception as e:
@@ -162,18 +168,18 @@ def run_cross_app_validation(base_url: str = DEFAULT_VAPI_URL) -> list:
     # Phase 3: BOLA Test — User B reads User A's object without authorization
     # ──────────────────────────────────────────────────────────────────────────
     print()
-    print("[TEST] BOLA: User B accessing User A's object (GET /api2/user/{id})")
+    print(f"[TEST] BOLA: User B accessing User A's object (GET {prefix}/api1/user/{{id}})")
 
     bola_result = {
         "target": "vAPI",
         "vulnerability_class": "BOLA",
-        "endpoint": f"GET {base_url}/api2/user/{{id}}",
+        "endpoint": f"GET {base_url}{prefix}/api1/user/{{id}}",
         "detected": "FALSE_NEGATIVE",
         "evidence": "Request made, response did not indicate cross-user exposure",
         "status_code": None,
     }
 
-    # Try a range of IDs: start from 1 if we don't have user A's ID
+    # Try a range of IDs: start from user_a_id if known, or 1..8
     probe_ids = list(range(1, 8))
     if user_a_id:
         probe_ids = [user_a_id] + [i for i in probe_ids if i != user_a_id]
@@ -181,14 +187,14 @@ def run_cross_app_validation(base_url: str = DEFAULT_VAPI_URL) -> list:
     headers_b = {}
     if token_b:
         headers_b["Authorization"] = f"Bearer {token_b}"
+        headers_b["Authorization-Token"] = str(token_b)
 
     for probe_id in probe_ids:
         try:
-            r_bola = client.get(f"{base_url}/api2/user/{probe_id}", headers=headers_b)
+            r_bola = client.get(f"{base_url}{prefix}/api1/user/{probe_id}", headers=headers_b)
             bola_result["status_code"] = r_bola.status_code
             if r_bola.status_code == 200:
                 body = r_bola.json()
-                # Check if we got back data that is NOT user B's own data
                 returned_id = (
                     body.get("id")
                     or (body.get("user") or {}).get("id")
@@ -202,7 +208,6 @@ def run_cross_app_validation(base_url: str = DEFAULT_VAPI_URL) -> list:
                     )
                     break
                 elif returned_id is None:
-                    # Got 200 but can't parse ID — still a TRUE POSITIVE signal
                     bola_result["detected"] = "TRUE_POSITIVE"
                     bola_result["evidence"] = (
                         f"HTTP 200 returned data for object id={probe_id} "
@@ -217,33 +222,36 @@ def run_cross_app_validation(base_url: str = DEFAULT_VAPI_URL) -> list:
     results.append(bola_result)
 
     # ──────────────────────────────────────────────────────────────────────────
-    # Phase 4: BFLA Test — Non-admin user accessing admin endpoint
+    # Phase 4: BFLA Test — Non-admin user accessing all-users admin endpoint
     # ──────────────────────────────────────────────────────────────────────────
     print()
-    print("[TEST] BFLA: Non-admin accessing GET /api6/user/dead")
+    print(f"[TEST] BFLA: Non-admin accessing GET {prefix}/api5/users")
 
     bfla_result = {
         "target": "vAPI",
         "vulnerability_class": "BFLA",
-        "endpoint": f"GET {base_url}/api6/user/dead",
+        "endpoint": f"GET {base_url}{prefix}/api5/users",
         "detected": "FALSE_NEGATIVE",
         "evidence": "Request made but endpoint returned non-200",
         "status_code": None,
     }
 
-    # Try with user A's token (non-admin) and also unauthenticated
+    # Try with user A's token (non-admin) and unauthenticated
     for token_label, token_val in [("User A (non-admin)", token_a), ("Unauthenticated", None)]:
         headers_test = {}
         if token_val:
             headers_test["Authorization"] = f"Bearer {token_val}"
+            headers_test["Authorization-Token"] = str(token_val)
         try:
-            r_bfla = client.get(f"{base_url}/api6/user/dead", headers=headers_test)
+            r_bfla = client.get(f"{base_url}{prefix}/api5/users", headers=headers_test)
             bfla_result["status_code"] = r_bfla.status_code
             if r_bfla.status_code == 200:
+                body = r_bfla.json()
+                user_count = len(body) if isinstance(body, list) else 1
                 bfla_result["detected"] = "TRUE_POSITIVE"
                 bfla_result["evidence"] = (
-                    f"HTTP 200 returned for {token_label} on admin endpoint "
-                    f"/api6/user/dead — no ADMIN role check enforced"
+                    f"HTTP 200 returned for {token_label} on {prefix}/api5/users — "
+                    f"all {user_count} users listed without ADMIN role check"
                 )
                 break
         except Exception as e:
@@ -251,41 +259,6 @@ def run_cross_app_validation(base_url: str = DEFAULT_VAPI_URL) -> list:
 
     print(f"   Result: {bfla_result['detected']} | Status: {bfla_result['status_code']} | {bfla_result['evidence'][:80]}")
     results.append(bfla_result)
-
-    # ──────────────────────────────────────────────────────────────────────────
-    # Phase 5: Additional vAPI6 — GET /api6/user (all-users admin endpoint)
-    # ──────────────────────────────────────────────────────────────────────────
-    print()
-    print("[TEST] BFLA: Non-admin accessing GET /api6/user (all-users list)")
-
-    bfla2_result = {
-        "target": "vAPI",
-        "vulnerability_class": "BFLA",
-        "endpoint": f"GET {base_url}/api6/user",
-        "detected": "FALSE_NEGATIVE",
-        "evidence": "Request made but endpoint returned non-200",
-        "status_code": None,
-    }
-
-    for token_label, token_val in [("User A (non-admin)", token_a), ("Unauthenticated", None)]:
-        headers_test = {}
-        if token_val:
-            headers_test["Authorization"] = f"Bearer {token_val}"
-        try:
-            r_bfla2 = client.get(f"{base_url}/api6/user", headers=headers_test)
-            bfla2_result["status_code"] = r_bfla2.status_code
-            if r_bfla2.status_code == 200:
-                bfla2_result["detected"] = "TRUE_POSITIVE"
-                bfla2_result["evidence"] = (
-                    f"HTTP 200 returned for {token_label} on admin endpoint "
-                    f"/api6/user — all users listed without ADMIN role check"
-                )
-                break
-        except Exception as e:
-            bfla2_result["evidence"] = f"Request error: {e}"
-
-    print(f"   Result: {bfla2_result['detected']} | Status: {bfla2_result['status_code']} | {bfla2_result['evidence'][:80]}")
-    results.append(bfla2_result)
 
     _print_table(results)
     _save_results(results)

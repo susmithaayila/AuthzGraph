@@ -1,4 +1,4 @@
-﻿{
+{
   "openapi": "3.0.0",
   "info": {
     "title": "vAPI - Vulnerable Adversely Programmed Interface",
@@ -12,10 +12,10 @@
     }
   ],
   "paths": {
-    "/api2/user/{id}": {
+    "/api1/user/{id}": {
       "get": {
         "summary": "Get user by ID (BOLA vulnerability: no ownership check)",
-        "description": "vAPI2: User ID can be enumerated sequentially. No authorization check verifies the requester owns the requested user object.",
+        "description": "vAPI1: User ID can be enumerated sequentially. No authorization check verifies the requester owns the requested user object.",
         "parameters": [
           {
             "name": "id",
@@ -39,7 +39,7 @@
         }
       }
     },
-    "/api2/user": {
+    "/api1/user": {
       "post": {
         "summary": "Create user (baseline legitimate operation)",
         "requestBody": {
@@ -62,34 +62,21 @@
         }
       }
     },
-    "/api6/user/dead": {
+    "/api5/users": {
       "get": {
-        "summary": "Admin-only endpoint without proper role check (BFLA vulnerability)",
-        "description": "vAPI6: This endpoint is accessible without ADMIN role verification, demonstrating BFLA.",
+        "summary": "Get all users without administrative authorization (BFLA vulnerability)",
+        "description": "vAPI5: List all users returned to any authenticated user without administrative role check.",
         "security": [{ "bearerAuth": [] }],
         "responses": {
-          "200": { "description": "Data returned without admin authorization check" },
-          "401": { "description": "Unauthorized" }
+          "200": { "description": "All users returned without admin authorization check" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
         },
         "x-authzgraph-tags": {
           "vulnerability_class": "BFLA",
           "admin_path": true,
           "object_id_param": null,
           "writable_fields": []
-        }
-      }
-    },
-    "/api6/user": {
-      "get": {
-        "summary": "Get all users (admin endpoint)",
-        "description": "vAPI6: List all users without proper authorization enforcement.",
-        "security": [{ "bearerAuth": [] }],
-        "responses": {
-          "200": { "description": "All users returned" }
-        },
-        "x-authzgraph-tags": {
-          "vulnerability_class": "BFLA",
-          "admin_path": true
         }
       }
     }
